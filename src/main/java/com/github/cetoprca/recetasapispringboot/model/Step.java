@@ -15,7 +15,10 @@ public class Step {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "description", unique = true)
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "description")
     private String description;
 
     @Column(name = "position")

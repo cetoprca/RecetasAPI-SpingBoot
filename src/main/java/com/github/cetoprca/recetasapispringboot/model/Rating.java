@@ -16,7 +16,7 @@ public class Rating {
     private Integer id;
 
     @Column(name = "title")
-    private Integer title;
+    private String title;
 
     @Column(name = "description", unique = true)
     private String description;
