@@ -1,5 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.model;
 
+import com.github.cetoprca.recetasapispringboot.DTO.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,4 +37,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Rating> ratings = new HashSet<>();
 
+    public User(UserDTO userDTO) {
+        this.id = userDTO.id();
+        this.username = userDTO.username();
+        this.biography = userDTO.biography();
+        this.profilePicturePath = userDTO.profilePicturePath();
+    }
 }

@@ -1,5 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.model;
 
+import com.github.cetoprca.recetasapispringboot.DTO.RatingDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,4 +32,11 @@ public class Rating {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Rating(RatingDTO ratingDTO) {
+        this.id = ratingDTO.id();
+        this.title = ratingDTO.title();
+        this.description = ratingDTO.description();
+        this.stars = ratingDTO.stars();
+    }
 }

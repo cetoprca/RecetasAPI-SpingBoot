@@ -1,5 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.model;
 
+import com.github.cetoprca.recetasapispringboot.DTO.TagDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,4 +24,9 @@ public class Tag {
 
     @ManyToMany(mappedBy = "tags")
     private Set<Recipe> recipes = new HashSet<>();
+
+    public Tag(TagDTO tagDTO){
+        this.id = tagDTO.id();
+        this.name = tagDTO.name();
+    }
 }

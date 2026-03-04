@@ -1,5 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.model;
 
+import com.github.cetoprca.recetasapispringboot.DTO.StepDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,4 +31,12 @@ public class Step {
     @ManyToOne
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
+
+    public Step(StepDTO stepDTO) {
+        this.id = stepDTO.id();
+        this.title = stepDTO.title();
+        this.description = stepDTO.description();
+        this.position = stepDTO.position();
+        this.image = stepDTO.image();
+    }
 }

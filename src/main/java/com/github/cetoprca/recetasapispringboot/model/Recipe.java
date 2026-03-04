@@ -1,5 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.model;
 
+import com.github.cetoprca.recetasapispringboot.DTO.RecipeDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -71,6 +72,18 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
     private Set<Ingredient> ingredients = new HashSet<>();
+
+    public Recipe(RecipeDTO recipeDTO) {
+        this.id = recipeDTO.id();
+        this.title = recipeDTO.title();
+        this.description = recipeDTO.description();
+        this.image = recipeDTO.image();
+        this.prepTime = recipeDTO.prepTime();
+        this.cookTime = recipeDTO.cookTime();
+        this.totalTime = recipeDTO.totalTime();
+        this.isPublic = recipeDTO.isPublic();
+        this.creationDate = recipeDTO.creationDate();
+    }
 
     @PrePersist
     private void setCreationDate(){

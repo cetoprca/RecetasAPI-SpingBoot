@@ -1,5 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.model;
 
+import com.github.cetoprca.recetasapispringboot.DTO.CuisineDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,4 +24,9 @@ public class Cuisine {
 
     @OneToMany(mappedBy = "cuisine")
     private Set<Recipe> recipes = new HashSet<>();
+
+    public Cuisine(CuisineDTO cuisineDTO){
+        this.id = cuisineDTO.id();
+        this.name = cuisineDTO.name();
+    }
 }
