@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor @AllArgsConstructor
-public class Tag {
+public class Tag implements BaseModel<Tag, TagDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -29,4 +29,21 @@ public class Tag {
         this.id = tagDTO.id();
         this.name = tagDTO.name();
     }
+
+    @Override
+    public Tag mergeWith(Tag baseModel) {
+        if (baseModel.getName() != null) this.name = baseModel.getName();
+        if (baseModel.getRecipes() != null){
+            for (Recipe recipe : baseModel.getRecipes()){
+                if (this.recipes.contains(recipe)){
+                    this.recipes.remove(recipe);
+                }else{
+                    this.recipes.add(recipe);
+                }
+            }
+        }
+
+        return this;
+    }
+
 }

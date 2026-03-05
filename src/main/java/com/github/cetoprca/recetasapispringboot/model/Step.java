@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor @AllArgsConstructor
-public class Step {
+public class Step implements BaseModel<Step, StepDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -39,4 +39,16 @@ public class Step {
         this.position = stepDTO.position();
         this.image = stepDTO.image();
     }
+
+    @Override
+    public Step mergeWith(Step baseModel) {
+        if (baseModel.getTitle() != null) this.title = baseModel.getTitle();
+        if (baseModel.getDescription() != null) this.description = baseModel.getDescription();
+        if (baseModel.getPosition() != null) this.position = baseModel.getPosition();
+        if (baseModel.getImage() != null) this.image = baseModel.getImage();
+        if (baseModel.getRecipe() != null) this.recipe = baseModel.getRecipe();
+
+        return this;
+    }
+
 }

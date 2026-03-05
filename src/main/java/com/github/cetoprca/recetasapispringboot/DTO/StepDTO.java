@@ -1,6 +1,7 @@
 package com.github.cetoprca.recetasapispringboot.DTO;
 
 import com.github.cetoprca.recetasapispringboot.model.Step;
+import com.github.cetoprca.recetasapispringboot.model.User;
 
 public record StepDTO(
         Integer id,
@@ -9,7 +10,7 @@ public record StepDTO(
         Integer position,
         String image,
         Integer recipe
-) {
+) implements GenericDTO<Step> {
     public StepDTO(Step step){
         this(
                 step.getId(),
@@ -19,5 +20,20 @@ public record StepDTO(
                 step.getImage() == null ? "" : step.getImage(),
                 step.getRecipe() == null ? -1 : step.getRecipe().getId()
                 );
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    public GenericDTO<Step> fromModel(Step entity) {
+        return new StepDTO(entity);
+    }
+
+    @Override
+    public Step toModel() {
+        return new Step(this);
     }
 }

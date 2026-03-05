@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor @AllArgsConstructor
-public class Cuisine {
+public class Cuisine implements BaseModel<Cuisine, CuisineDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -28,5 +28,21 @@ public class Cuisine {
     public Cuisine(CuisineDTO cuisineDTO){
         this.id = cuisineDTO.id();
         this.name = cuisineDTO.name();
+    }
+
+    @Override
+    public Cuisine mergeWith(Cuisine baseModel) {
+        if (baseModel.getName() != null) this.name = baseModel.getName();
+        if (baseModel.getRecipes() != null){
+            for (Recipe recipe : baseModel.getRecipes()){
+                if (this.recipes.contains(recipe)){
+                    this.recipes.remove(recipe);
+                }else{
+                    this.recipes.add(recipe);
+                }
+            }
+        }
+
+        return this;
     }
 }

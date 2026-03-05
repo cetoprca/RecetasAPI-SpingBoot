@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor @AllArgsConstructor
-public class Rating {
+public class Rating implements BaseModel<Rating, RatingDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -19,7 +19,7 @@ public class Rating {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "description", unique = true)
+    @Column(name = "description")
     private String description;
 
     @Column(name = "stars")
@@ -38,5 +38,14 @@ public class Rating {
         this.title = ratingDTO.title();
         this.description = ratingDTO.description();
         this.stars = ratingDTO.stars();
+    }
+
+    @Override
+    public Rating mergeWith(Rating baseModel) {
+        if (baseModel.getTitle() != null) this.title = baseModel.getTitle();
+        if (baseModel.getDescription() != null) this.description = baseModel.getDescription();
+        if (baseModel.getStars() != null) this.stars = baseModel.getStars();
+
+        return this;
     }
 }

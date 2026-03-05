@@ -22,7 +22,7 @@ public record RecipeDTO(
         List<Integer> steps,
         List<Integer> tags,
         List<Integer> ingredients
-        ) {
+        ) implements GenericDTO<Recipe> {
     public RecipeDTO(Recipe recipe){
         this(
                 recipe.getId(),
@@ -43,4 +43,19 @@ public record RecipeDTO(
 
                 );
     }
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    public GenericDTO<Recipe> fromModel(Recipe entity) {
+        return new RecipeDTO(entity);
+    }
+
+    @Override
+    public Recipe toModel() {
+        return new Recipe(this);
+    }
+
 }
