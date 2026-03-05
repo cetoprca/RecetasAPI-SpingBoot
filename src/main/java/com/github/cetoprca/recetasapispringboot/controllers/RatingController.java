@@ -1,37 +1,147 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
 import com.github.cetoprca.recetasapispringboot.DTO.RatingDTO;
-import com.github.cetoprca.recetasapispringboot.DTO.TagDTO;
+import com.github.cetoprca.recetasapispringboot.DTO.StepDTO;
 import com.github.cetoprca.recetasapispringboot.model.Rating;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
-import com.github.cetoprca.recetasapispringboot.model.Tag;
+import com.github.cetoprca.recetasapispringboot.model.Step;
 import com.github.cetoprca.recetasapispringboot.service.RatingService;
 import com.github.cetoprca.recetasapispringboot.service.RecipeService;
-import com.github.cetoprca.recetasapispringboot.service.TagService;
 import com.github.cetoprca.recetasapispringboot.service.UserService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("")
-public class RatingController extends GenericController<Rating, RatingDTO> {
+@RequestMapping("api/recipe/{recipeID}/rating")
+public class RatingController{
 
     private final RatingService ratingService;
     private final RecipeService recipeService;
     private final UserService userService;
 
     public RatingController(RatingService ratingService, RecipeService recipeService, UserService userService) {
-        super(ratingService);
         this.ratingService = ratingService;
         this.recipeService = recipeService;
         this.userService = userService;
     }
 
-    @Override
+    @GetMapping
+    public ResponseEntity<?> findAll(@PathVariable(name = "recipeID") Integer recipeID){
+        try {
+
+            Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
+
+            if (recipe == null){
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok(recipe.getRatings().stream().map(RatingDTO::new).toList());
+
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> findById(@PathVariable(name = "recipeID") Integer recipeID, @PathVariable(name = "stepId") Integer stepID){
+        try {
+
+            Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
+
+            if (recipe == null){
+                return ResponseEntity.notFound().build();
+            }
+
+            RatingDTO ratingDTO = ratingService.findById(stepID).orElse(null);
+
+            if (ratingDTO == null){
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok(ratingDTO);
+
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> save(@PathVariable(name = "recipeID") Integer recipeID, @RequestBody RatingDTO entityDTO){
+        try {
+
+            Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
+
+            if (recipe == null){
+                return ResponseEntity.notFound().build();
+            }
+
+
+            Rating entity = entityDTO.toModel();
+            entity = setRelations(entity, entityDTO);
+
+            entity = ratingService.save(entity);
+
+            return ResponseEntity.ok(entityDTO.fromModel(entity));
+
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping
+    public ResponseEntity<?> update(@PathVariable(name = "recipeID") Integer recipeID, @RequestBody RatingDTO entityDTO){
+        try {
+
+            Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
+
+            if (recipe == null){
+                return ResponseEntity.notFound().build();
+            }
+
+            Rating entityA = entityDTO.toModel();
+            Rating entityB = ratingService.findByIdRaw(entityDTO.getId()).orElse(null);
+
+            if (entityB == null){
+                return ResponseEntity.notFound().build();
+            }
+
+            entityA = setRelations(entityA, entityDTO);
+
+            Rating finalEntity = entityB.mergeWith(entityA);
+
+            finalEntity = ratingService.update(finalEntity);
+
+            return ResponseEntity.ok(entityDTO.fromModel(finalEntity));
+
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{stepID}")
+    public ResponseEntity<?> deleteById(@PathVariable(name = "recipeID") Integer recipeID, @PathVariable(name = "stepID") Integer stepID){
+        try {
+
+            Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
+
+            if (recipe == null){
+                return ResponseEntity.notFound().build();
+            }
+
+            Rating entity = ratingService.findByIdRaw(stepID).orElse(null);
+
+            if (entity != null){
+                ratingService.deleteById(stepID);
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.notFound().build();
+
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
     protected Rating setRelations(Rating entity, RatingDTO dto) {
         userService.findByIdRaw(dto.author()).ifPresent(entity::setUser);
         recipeService.findByIdRaw(dto.author()).ifPresent(entity::setRecipe);

@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("api/ingredient")
 public class IngredientController extends GenericController<Ingredient, IngredientDTO> {
 
     private final IngredientService ingredientService;

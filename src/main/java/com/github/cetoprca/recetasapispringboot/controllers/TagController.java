@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("api/recipes/tag")
 public class TagController extends GenericController<Tag, TagDTO> {
 
     private final TagService tagService;
