@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor @AllArgsConstructor
-public class Ingredient {
+public class Ingredient implements BaseModel<Ingredient, IngredientDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -29,5 +29,21 @@ public class Ingredient {
     public Ingredient(IngredientDTO ingredientDTO){
         this.id = ingredientDTO.id();
         this.name = ingredientDTO.name();
+    }
+
+    @Override
+    public Ingredient mergeWith(Ingredient baseModel) {
+        if (baseModel.getName() != null) this.name = baseModel.getName();
+        if (baseModel.getRecipes() != null){
+            for (Recipe recipe : baseModel.getRecipes()){
+                if (this.recipes.contains(recipe)){
+                    this.recipes.remove(recipe);
+                }else{
+                    this.recipes.add(recipe);
+                }
+            }
+        }
+
+        return this;
     }
 }

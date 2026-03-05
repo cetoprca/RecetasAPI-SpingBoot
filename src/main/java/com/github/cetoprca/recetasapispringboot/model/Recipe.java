@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor @AllArgsConstructor
-public class Recipe {
+public class Recipe implements BaseModel<Recipe, RecipeDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -88,5 +88,48 @@ public class Recipe {
     @PrePersist
     private void setCreationDate(){
         creationDate = LocalDate.now();
+    }
+
+    @Override
+    public Recipe mergeWith(Recipe baseModel) {
+        if (baseModel.getTitle() != null) this.title = baseModel.getTitle();
+        if (baseModel.getDescription() != null) this.description = baseModel.getDescription();
+        if (baseModel.getImage() != null) this.image = baseModel.getImage();
+        if (baseModel.getPrepTime() != null) this.prepTime = baseModel.getPrepTime();
+        if (baseModel.getCookTime() != null) this.cookTime = baseModel.getCookTime();
+        if (baseModel.getTotalTime() != null) this.totalTime = baseModel.getTotalTime();
+        if (baseModel.getIsPublic() != null) this.isPublic = baseModel.getIsPublic();
+        if (baseModel.getUser() != null) this.user = baseModel.getUser();
+        if (baseModel.getCuisine() != null) this.cuisine = baseModel.getCuisine();
+
+        if (baseModel.getIngredients() != null){
+            for (Ingredient ingredient : baseModel.getIngredients()){
+                if (this.ingredients.contains(ingredient)){
+                    this.ingredients.remove(ingredient);
+                }else{
+                    this.ingredients.add(ingredient);
+                }
+            }
+        }
+        if (baseModel.getRatings() != null){
+            for (Rating rating : baseModel.getRatings()){
+                if (this.ratings.contains(rating)){
+                    this.ratings.remove(rating);
+                }else{
+                    this.ratings.add(rating);
+                }
+            }
+        }
+        if (baseModel.getTags() != null){
+            for (Tag tag : baseModel.getTags()){
+                if (this.tags.contains(tag)){
+                    this.tags.remove(tag);
+                }else{
+                    this.tags.add(tag);
+                }
+            }
+        }
+
+        return this;
     }
 }

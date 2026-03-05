@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor @AllArgsConstructor
-public class User {
+public class User implements BaseModel<User, UserDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -43,4 +43,40 @@ public class User {
         this.biography = userDTO.biography();
         this.profilePicturePath = userDTO.profilePicturePath();
     }
+
+    @Override
+    public User mergeWith(User baseModel) {
+        if (baseModel.getBiography() != null) this.biography = baseModel.getBiography();
+        if (baseModel.getProfilePicturePath() != null) this.profilePicturePath = baseModel.getProfilePicturePath();
+        if (baseModel.getRecipes() != null){
+            for (Recipe recipe : baseModel.getRecipes()){
+                if (this.recipes.contains(recipe)){
+                    this.recipes.remove(recipe);
+                }else{
+                    this.recipes.add(recipe);
+                }
+            }
+        }
+        if (baseModel.getSavedRecipes() != null){
+            for (Recipe recipe : baseModel.getSavedRecipes()){
+                if (this.savedRecipes.contains(recipe)){
+                    this.savedRecipes.remove(recipe);
+                }else{
+                    this.savedRecipes.add(recipe);
+                }
+            }
+        }
+        if (baseModel.getRatings() != null){
+            for (Rating rating : baseModel.getRatings()){
+                if (this.ratings.contains(rating)){
+                    this.ratings.remove(rating);
+                }else{
+                    this.ratings.add(rating);
+                }
+            }
+        }
+
+        return this;
+    }
+
 }
