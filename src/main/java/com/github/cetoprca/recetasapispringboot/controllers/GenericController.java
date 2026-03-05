@@ -30,7 +30,7 @@ public abstract class GenericController<T extends BaseModel<T, D>, D extends Gen
         try {
 
             T entity = entityDTO.toModel();
-            entity = setRelations(entity);
+            entity = setRelations(entity, entityDTO);
 
             entity = service.save(entity);
 
@@ -51,6 +51,8 @@ public abstract class GenericController<T extends BaseModel<T, D>, D extends Gen
             if (entityB == null){
                 return ResponseEntity.notFound().build();
             }
+
+            entityA = setRelations(entityA, entityDTO);
 
             T finalEntity = entityB.mergeWith(entityA);
 
@@ -81,5 +83,5 @@ public abstract class GenericController<T extends BaseModel<T, D>, D extends Gen
         }
     }
 
-    protected abstract T setRelations(T entity);
+    protected abstract T setRelations(T entity, D dto);
 }
