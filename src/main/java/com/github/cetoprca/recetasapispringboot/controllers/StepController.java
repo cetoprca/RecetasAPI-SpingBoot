@@ -37,7 +37,7 @@ public class StepController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/{stepID}")
     public ResponseEntity<?> findById(@PathVariable(name = "recipeID") Integer recipeID, @PathVariable(name = "stepId") Integer stepID){
         try {
 
