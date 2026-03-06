@@ -106,21 +106,33 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
         List<Step> steps = new ArrayList<>();
         List<Rating> ratings = new ArrayList<>();
 
-        dto.ingredients().forEach(id -> {
-            ingredientService.findByIdRaw(id).ifPresent(ingredients::add);
-        });
-        dto.tags().forEach(id -> {
-            tagService.findByIdRaw(id).ifPresent(tags::add);
-        });
-        dto.steps().forEach(id -> {
-            stepService.findByIdRaw(id).ifPresent(steps::add);
-        });
-        dto.ratings().forEach(id -> {
-            ratingService.findByIdRaw(id).ifPresent(ratings::add);
-        });
+        if (dto.ingredients() != null){
+            dto.ingredients().forEach(id -> {
+                ingredientService.findByIdRaw(id).ifPresent(ingredients::add);
+            });
+        }
+        if (dto.tags() != null){
+            dto.tags().forEach(id -> {
+                tagService.findByIdRaw(id).ifPresent(tags::add);
+            });
+        }
+        if (dto.steps() != null){
+            dto.steps().forEach(id -> {
+                stepService.findByIdRaw(id).ifPresent(steps::add);
+            });
+        }
+        if (dto.ratings() != null){
+            dto.ratings().forEach(id -> {
+                ratingService.findByIdRaw(id).ifPresent(ratings::add);
+            });
+        }
 
-        userService.findByIdRaw(dto.author()).ifPresent(entity::setUser);
-        cuisineService.findByIdRaw(dto.cuisine()).ifPresent(entity::setCuisine);
+        if (dto.author() != null){
+            userService.findByIdRaw(dto.author()).ifPresent(entity::setAuthor);
+        }
+        if (dto.cuisine() != null){
+            cuisineService.findByIdRaw(dto.cuisine()).ifPresent(entity::setCuisine);
+        }
 
         entity.setIngredients(new HashSet<>(ingredients));
         entity.setTags(new HashSet<>(tags));

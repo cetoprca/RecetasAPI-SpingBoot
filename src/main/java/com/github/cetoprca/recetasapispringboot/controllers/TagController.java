@@ -32,9 +32,11 @@ public class TagController extends GenericController<Tag, TagDTO> {
     protected Tag setRelations(Tag entity, TagDTO dto) {
         List<Recipe> recipes = new ArrayList<>();
 
-        dto.recipes().forEach(id -> {
-            recipeService.findByIdRaw(id).ifPresent(recipes::add);
-        });
+        if (dto.recipes() != null){
+            dto.recipes().forEach(id -> {
+                recipeService.findByIdRaw(id).ifPresent(recipes::add);
+            });
+        }
 
         entity.setRecipes(new HashSet<>(recipes));
 

@@ -2,14 +2,14 @@ package com.github.cetoprca.recetasapispringboot.model;
 
 import com.github.cetoprca.recetasapispringboot.DTO.StepDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "step")
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor @AllArgsConstructor
 public class Step implements BaseModel<Step, StepDTO> {
     @Id

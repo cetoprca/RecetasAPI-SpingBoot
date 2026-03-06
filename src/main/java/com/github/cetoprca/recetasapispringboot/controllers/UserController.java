@@ -32,17 +32,29 @@ public class UserController extends GenericController<User, UserDTO> {
     @Override
     protected User setRelations(User entity, UserDTO dto) {
         List<Recipe> recipes = new ArrayList<>();
+        List<Recipe> savedRecipes = new ArrayList<>();
         List<Rating> ratings = new ArrayList<>();
 
-        dto.recipes().forEach(id -> {
-            recipeService.findByIdRaw(id).ifPresent(recipes::add);
-        });
+        if (dto.recipes() != null){
+            dto.recipes().forEach(id -> {
+                recipeService.findByIdRaw(id).ifPresent(recipes::add);
+            });
+        }
 
-        dto.ratings().forEach(id -> {
-            ratingService.findByIdRaw(id).ifPresent(ratings::add);
-        });
+        if (dto.savedRecipes() != null){
+            dto.savedRecipes().forEach(id -> {
+                recipeService.findByIdRaw(id).ifPresent(savedRecipes::add);
+            });
+        }
+
+        if (dto.ratings() != null) {
+            dto.ratings().forEach(id -> {
+                ratingService.findByIdRaw(id).ifPresent(ratings::add);
+            });
+        }
 
         entity.setRecipes(new HashSet<>(recipes));
+        entity.setSavedRecipes(new HashSet<>(savedRecipes));
         entity.setRatings(new HashSet<>(ratings));
 
         return entity;

@@ -3,7 +3,6 @@ package com.github.cetoprca.recetasapispringboot.service;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeDTO;
 import com.github.cetoprca.recetasapispringboot.model.Cuisine;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
-import com.github.cetoprca.recetasapispringboot.model.Tag;
 import com.github.cetoprca.recetasapispringboot.model.User;
 import com.github.cetoprca.recetasapispringboot.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class RecipeService extends GenericService<Recipe, RecipeDTO> {
@@ -33,11 +31,11 @@ public class RecipeService extends GenericService<Recipe, RecipeDTO> {
         return recipeRepository.findByTitle(title).map(this::toDTO);
     }
 
-    public List<RecipeDTO> findByUser(User user){
-        return recipeRepository.findByUser(user).stream().map(this::toDTO).toList();
+    public List<RecipeDTO> findByAuthor(User user){
+        return recipeRepository.findByAuthor(user).stream().map(this::toDTO).toList();
     }
-    public List<RecipeDTO> findByUserId(Integer userId){
-        return recipeRepository.findByUser_id(userId).stream().map(this::toDTO).toList();
+    public List<RecipeDTO> findByAuthor_id(Integer userId){
+        return recipeRepository.findByAuthor_id(userId).stream().map(this::toDTO).toList();
     }
 
     public List<RecipeDTO> findByCuisine(Cuisine cuisine){

@@ -2,9 +2,7 @@ package com.github.cetoprca.recetasapispringboot.model;
 
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -13,7 +11,9 @@ import java.util.Set;
 @Entity
 @Table(name = "recipe")
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor @AllArgsConstructor
 public class Recipe implements BaseModel<Recipe, RecipeDTO> {
     @Id
@@ -45,7 +45,7 @@ public class Recipe implements BaseModel<Recipe, RecipeDTO> {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User author;
 
     @OneToMany(mappedBy = "recipe")
     private Set<Rating> ratings = new HashSet<>();
@@ -99,7 +99,7 @@ public class Recipe implements BaseModel<Recipe, RecipeDTO> {
         if (baseModel.getCookTime() != null) this.cookTime = baseModel.getCookTime();
         if (baseModel.getTotalTime() != null) this.totalTime = baseModel.getTotalTime();
         if (baseModel.getIsPublic() != null) this.isPublic = baseModel.getIsPublic();
-        if (baseModel.getUser() != null) this.user = baseModel.getUser();
+        if (baseModel.getAuthor() != null) this.author = baseModel.getAuthor();
         if (baseModel.getCuisine() != null) this.cuisine = baseModel.getCuisine();
 
         if (baseModel.getIngredients() != null){

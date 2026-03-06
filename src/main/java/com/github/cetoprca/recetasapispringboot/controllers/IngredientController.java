@@ -32,9 +32,11 @@ public class IngredientController extends GenericController<Ingredient, Ingredie
     protected Ingredient setRelations(Ingredient entity, IngredientDTO dto) {
         List<Recipe> recipes = new ArrayList<>();
 
-        dto.recipes().forEach(id -> {
-            recipeService.findByIdRaw(id).ifPresent(recipes::add);
-        });
+        if (dto.recipes() != null){
+            dto.recipes().forEach(id -> {
+                recipeService.findByIdRaw(id).ifPresent(recipes::add);
+            });
+        }
 
         entity.setRecipes(new HashSet<>(recipes));
 

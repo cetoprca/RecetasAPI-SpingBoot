@@ -138,7 +138,9 @@ public class StepController {
     }
 
     protected Step setRelations(Step entity, StepDTO dto) {
-        recipeService.findByIdRaw(dto.recipe()).ifPresent(entity::setRecipe);
+        if (dto.recipe() != null) {
+            recipeService.findByIdRaw(dto.recipe()).ifPresent(entity::setRecipe);
+        }
 
         return entity;
     }

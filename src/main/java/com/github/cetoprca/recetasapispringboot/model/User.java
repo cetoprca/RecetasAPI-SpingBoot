@@ -2,9 +2,7 @@ package com.github.cetoprca.recetasapispringboot.model;
 
 import com.github.cetoprca.recetasapispringboot.DTO.UserDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +10,8 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 
-@Data
+@Getter @Setter
+@ToString
 @NoArgsConstructor @AllArgsConstructor
 public class User implements BaseModel<User, UserDTO> {
     @Id
@@ -30,9 +29,15 @@ public class User implements BaseModel<User, UserDTO> {
     @Column(name = "profilePicturePath")
     private String profilePicturePath;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
+    @JoinTable(
+            name = "user_saved_recipe",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id")
+    )
     private Set<Recipe> savedRecipes = new HashSet<>();
-    @OneToMany(mappedBy = "user")
+
+    @OneToMany(mappedBy = "author")
     private Set<Recipe> recipes = new HashSet<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Rating> ratings = new HashSet<>();

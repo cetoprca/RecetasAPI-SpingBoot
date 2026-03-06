@@ -2,9 +2,7 @@ package com.github.cetoprca.recetasapispringboot.model;
 
 import com.github.cetoprca.recetasapispringboot.DTO.TagDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +10,9 @@ import java.util.Set;
 @Entity
 @Table(name = "tag")
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor @AllArgsConstructor
 public class Tag implements BaseModel<Tag, TagDTO> {
     @Id

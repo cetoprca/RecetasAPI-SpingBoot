@@ -143,8 +143,12 @@ public class RatingController{
     }
 
     protected Rating setRelations(Rating entity, RatingDTO dto) {
-        userService.findByIdRaw(dto.author()).ifPresent(entity::setUser);
-        recipeService.findByIdRaw(dto.author()).ifPresent(entity::setRecipe);
+        if (dto.recipe() != null){
+            recipeService.findByIdRaw(dto.recipe()).ifPresent(entity::setRecipe);
+        }
+        if (dto.author() != null){
+            userService.findByIdRaw(dto.author()).ifPresent(entity::setUser);
+        }
 
         return entity;
     }

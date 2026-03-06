@@ -34,7 +34,7 @@ public record RecipeDTO(
                 recipe.getTotalTime() == null ? 0 : recipe.getTotalTime(),
                 recipe.getIsPublic() != null && recipe.getIsPublic(),
                 recipe.getCreationDate() == null ? LocalDate.now() : recipe.getCreationDate(),
-                recipe.getUser() == null ? -1 : recipe.getUser().getId(),
+                recipe.getAuthor() == null ? -1 : recipe.getAuthor().getId(),
                 recipe.getCuisine() == null ? -1 : recipe.getCuisine().getId(),
                 recipe.getRatings() == null ? new ArrayList<>() : recipe.getRatings().stream().map(Rating::getId).toList(),
                 recipe.getSteps() == null ? new ArrayList<>() : recipe.getSteps().stream().map(Step::getId).toList(),

@@ -2,14 +2,14 @@ package com.github.cetoprca.recetasapispringboot.model;
 
 import com.github.cetoprca.recetasapispringboot.DTO.RatingDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "rating")
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor @AllArgsConstructor
 public class Rating implements BaseModel<Rating, RatingDTO> {
     @Id
