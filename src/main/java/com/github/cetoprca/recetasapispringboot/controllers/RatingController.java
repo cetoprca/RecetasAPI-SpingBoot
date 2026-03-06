@@ -42,8 +42,8 @@ public class RatingController{
         }
     }
 
-    @GetMapping
-    public ResponseEntity<?> findById(@PathVariable(name = "recipeID") Integer recipeID, @PathVariable(name = "stepId") Integer stepID){
+    @GetMapping("/{ratingID}")
+    public ResponseEntity<?> findById(@PathVariable(name = "recipeID") Integer recipeID, @PathVariable(name = "ratingID") Integer stepID){
         try {
 
             Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
@@ -118,8 +118,8 @@ public class RatingController{
         }
     }
 
-    @DeleteMapping("/{stepID}")
-    public ResponseEntity<?> deleteById(@PathVariable(name = "recipeID") Integer recipeID, @PathVariable(name = "stepID") Integer stepID){
+    @DeleteMapping("/{ratingID}")
+    public ResponseEntity<?> deleteById(@PathVariable(name = "recipeID") Integer recipeID, @PathVariable(name = "ratingID") Integer stepID){
         try {
 
             Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
