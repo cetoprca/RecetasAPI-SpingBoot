@@ -1,13 +1,10 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
 import com.github.cetoprca.recetasapispringboot.DTO.CuisineDTO;
-import com.github.cetoprca.recetasapispringboot.DTO.TagDTO;
 import com.github.cetoprca.recetasapispringboot.model.Cuisine;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
-import com.github.cetoprca.recetasapispringboot.model.Tag;
 import com.github.cetoprca.recetasapispringboot.service.CuisineService;
 import com.github.cetoprca.recetasapispringboot.service.RecipeService;
-import com.github.cetoprca.recetasapispringboot.service.TagService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

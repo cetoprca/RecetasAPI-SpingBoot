@@ -1,5 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
+import com.github.cetoprca.recetasapispringboot.DTO.CredentialsDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.UserDTO;
 import com.github.cetoprca.recetasapispringboot.model.Rating;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
@@ -7,6 +8,11 @@ import com.github.cetoprca.recetasapispringboot.model.User;
 import com.github.cetoprca.recetasapispringboot.service.RatingService;
 import com.github.cetoprca.recetasapispringboot.service.RecipeService;
 import com.github.cetoprca.recetasapispringboot.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,6 +33,32 @@ public class UserController extends GenericController<User, UserDTO> {
         this.userService = userService;
         this.ratingService = ratingService;
         this.recipeService = recipeService;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody CredentialsDTO credentialsDTO){
+        try {
+
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String hashPassword = passwordEncoder.encode(credentialsDTO.password());
+
+            User triedUser = userService.findByUsernameRaw(credentialsDTO.username()).orElse(null);
+
+            if (triedUser != null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+
+            User user = new User();
+            user.setPassword(hashPassword);
+            user.setUsername(credentialsDTO.username());
+
+            user = userService.save(user);
+
+            return ResponseEntity.ok(new UserDTO(user));
+        }catch (Exception e){
+//            throw new RuntimeException(e);
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @Override

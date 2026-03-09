@@ -1,10 +1,8 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
 import com.github.cetoprca.recetasapispringboot.DTO.RatingDTO;
-import com.github.cetoprca.recetasapispringboot.DTO.StepDTO;
 import com.github.cetoprca.recetasapispringboot.model.Rating;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
-import com.github.cetoprca.recetasapispringboot.model.Step;
 import com.github.cetoprca.recetasapispringboot.service.RatingService;
 import com.github.cetoprca.recetasapispringboot.service.RecipeService;
 import com.github.cetoprca.recetasapispringboot.service.UserService;

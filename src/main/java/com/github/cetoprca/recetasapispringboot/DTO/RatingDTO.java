@@ -1,7 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.DTO;
 
 import com.github.cetoprca.recetasapispringboot.model.Rating;
-import com.github.cetoprca.recetasapispringboot.model.User;
 
 public record RatingDTO(
         Integer id,

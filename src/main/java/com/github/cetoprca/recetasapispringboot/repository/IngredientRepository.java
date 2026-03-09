@@ -1,6 +1,5 @@
 package com.github.cetoprca.recetasapispringboot.repository;
 
-import com.github.cetoprca.recetasapispringboot.model.Cuisine;
 import com.github.cetoprca.recetasapispringboot.model.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 

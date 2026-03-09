@@ -1,9 +1,7 @@
 package com.github.cetoprca.recetasapispringboot.DTO;
 
-import com.github.cetoprca.recetasapispringboot.model.Cuisine;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
 import com.github.cetoprca.recetasapispringboot.model.Tag;
-import com.github.cetoprca.recetasapispringboot.model.User;
 
 import java.util.ArrayList;
 import java.util.List;

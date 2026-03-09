@@ -1,13 +1,10 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
 import com.github.cetoprca.recetasapispringboot.DTO.IngredientDTO;
-import com.github.cetoprca.recetasapispringboot.DTO.StepDTO;
 import com.github.cetoprca.recetasapispringboot.model.Ingredient;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
-import com.github.cetoprca.recetasapispringboot.model.Step;
 import com.github.cetoprca.recetasapispringboot.service.IngredientService;
 import com.github.cetoprca.recetasapispringboot.service.RecipeService;
-import com.github.cetoprca.recetasapispringboot.service.StepService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

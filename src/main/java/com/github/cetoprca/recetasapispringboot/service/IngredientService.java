@@ -1,10 +1,7 @@
 package com.github.cetoprca.recetasapispringboot.service;
 
-import com.github.cetoprca.recetasapispringboot.DTO.CuisineDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.IngredientDTO;
-import com.github.cetoprca.recetasapispringboot.model.Cuisine;
 import com.github.cetoprca.recetasapispringboot.model.Ingredient;
-import com.github.cetoprca.recetasapispringboot.repository.CuisineRepository;
 import com.github.cetoprca.recetasapispringboot.repository.IngredientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
