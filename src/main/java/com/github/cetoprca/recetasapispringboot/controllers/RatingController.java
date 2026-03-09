@@ -79,6 +79,8 @@ public class RatingController{
             Rating entity = entityDTO.toModel();
             entity = setRelations(entity, entityDTO);
 
+            entity.setRecipe(recipe);
+
             entity = ratingService.save(entity);
 
             return ResponseEntity.ok(entityDTO.fromModel(entity));
