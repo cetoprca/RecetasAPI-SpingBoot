@@ -25,6 +25,7 @@ public class Recipe implements BaseModel<Recipe, RecipeDTO> {
     @Column(name = "description")
     private String description;
 
+    @ManyToMany(mappedBy = "usedInRecipes")
     @Column(name = "image")
     private String image;
 

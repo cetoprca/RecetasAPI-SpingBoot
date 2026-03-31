@@ -26,6 +26,7 @@ public class User implements BaseModel<User, UserDTO> {
     @Column(name = "biography")
     private String biography;
 
+    @ManyToMany(mappedBy = "usedInUsers")
     @Column(name = "profilePicturePath")
     private String profilePicturePath;
 

@@ -25,6 +25,7 @@ public class Step implements BaseModel<Step, StepDTO> {
     @Column(name = "position")
     private Integer position;
 
+    @ManyToMany(mappedBy = "usedInSteps")
     @Column(name = "image")
     private String image;
 
