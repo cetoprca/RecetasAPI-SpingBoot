@@ -1,5 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
+import com.github.cetoprca.recetasapispringboot.DTO.FilterDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeDTO;
 import com.github.cetoprca.recetasapispringboot.model.*;
 import com.github.cetoprca.recetasapispringboot.service.*;
@@ -40,8 +41,28 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
     @GetMapping
     public ResponseEntity<?> findAll() {
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            return ResponseEntity.ok(recipeService.findAll().stream().filter(RecipeDTO::isPublic));
+            if (authentication == null){
+                throw new UserPrincipalNotFoundException(null);
+            }
+
+            User loggedUser = userService.findByUsernameRaw(authentication.getName()).orElseThrow();
+
+            if (!loggedUser.getUsername().equals("root")){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        } catch (UserPrincipalNotFoundException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+        return null;
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<?> findAll(@RequestBody FilterDTO filterDTO) {
+        try {
+
+            return ResponseEntity.ok(recipeService.findByFilter(filterDTO).stream().filter(RecipeDTO::isPublic));
 
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
@@ -75,17 +96,26 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
                 return ResponseEntity.notFound().build();
             }
 
+<<<<<<< HEAD
             return ResponseEntity.ok(user.getRecipes().stream().map(RecipeDTO::new).toList());
+=======
+            isAuthor = loggedUser == user;
+
+            List<RecipeDTO> userRecipes = recipeService.findByFilter(FilterDTO.builder().author(userID).build()).stream().filter(recipe -> recipe.isPublic() || isAuthor).toList();
+
+            return ResponseEntity.ok(userRecipes);
+>>>>>>> bd8fec1 (added search filter to recipes)
 
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
-    @GetMapping("/user/{userID}/saved")
+    @GetMapping("/user/saved")
     public ResponseEntity<?> findBySavedByUser(@PathVariable(name = "userID") Integer userID){
         try {
 
+<<<<<<< HEAD
             User user = userService.findByIdRaw(userID).orElse(null);
 
             if (user == null){
@@ -93,6 +123,9 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
             }
 
             return ResponseEntity.ok(user.getSavedRecipes().stream().map(RecipeDTO::new).toList());
+=======
+            return ResponseEntity.ok(loggedUser.getSavedRecipes().stream().map(RecipeDTO::new).toList());
+>>>>>>> bd8fec1 (added search filter to recipes)
 
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
