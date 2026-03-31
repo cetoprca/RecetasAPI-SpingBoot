@@ -1,7 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.model;
 
 import com.github.cetoprca.recetasapispringboot.DTO.IngredientDTO;
-import com.github.cetoprca.recetasapispringboot.DTO.TagDTO;
 import jakarta.persistence.*;
 import lombok.*;
 

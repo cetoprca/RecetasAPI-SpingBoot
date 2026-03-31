@@ -21,8 +21,8 @@ public abstract class GenericController<T extends BaseModel<T, D>, D extends Gen
             return ResponseEntity.ok(service.findAll());
 
         }catch (Exception e){
-            throw new RuntimeException(e);
-//            return ResponseEntity.internalServerError().body(e.getMessage());
+//            throw new RuntimeException(e);
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
@@ -38,8 +38,8 @@ public abstract class GenericController<T extends BaseModel<T, D>, D extends Gen
             return ResponseEntity.ok(entityDTO.fromModel(entity));
 
         }catch (Exception e){
-            throw new RuntimeException(e);
-//            return ResponseEntity.internalServerError().body(e.getMessage());
+//            throw new RuntimeException(e);
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
@@ -63,8 +63,8 @@ public abstract class GenericController<T extends BaseModel<T, D>, D extends Gen
             return ResponseEntity.ok(entityDTO.fromModel(finalEntity));
 
         }catch (Exception e){
-            throw new RuntimeException(e);
-//            return ResponseEntity.internalServerError().body(e.getMessage());
+//            throw new RuntimeException(e);
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
@@ -82,8 +82,8 @@ public abstract class GenericController<T extends BaseModel<T, D>, D extends Gen
             return ResponseEntity.notFound().build();
 
         }catch (Exception e){
-            throw new RuntimeException(e);
-//            return ResponseEntity.internalServerError().body(e.getMessage());
+//            throw new RuntimeException(e);
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 

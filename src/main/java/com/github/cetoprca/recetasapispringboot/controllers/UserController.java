@@ -1,5 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
+import com.github.cetoprca.recetasapispringboot.DTO.CredentialsDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.UserDTO;
 import com.github.cetoprca.recetasapispringboot.model.Rating;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
@@ -7,29 +8,121 @@ import com.github.cetoprca.recetasapispringboot.model.User;
 import com.github.cetoprca.recetasapispringboot.service.RatingService;
 import com.github.cetoprca.recetasapispringboot.service.RecipeService;
 import com.github.cetoprca.recetasapispringboot.service.UserService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
-public class UserController extends GenericController<User, UserDTO> {
+public class UserController {
 
     private final UserService userService;
     private final RatingService ratingService;
     private final RecipeService recipeService;
 
     public UserController(UserService userService, RatingService ratingService, RecipeService recipeService) {
-        super(userService);
         this.userService = userService;
         this.ratingService = ratingService;
         this.recipeService = recipeService;
     }
 
-    @Override
+    @GetMapping("/{userID}")
+    public ResponseEntity<?> findAll(@PathVariable(name = "userID") Integer id){
+        try {
+
+            UserDTO userDTO = userService.findById(id).orElse(null);
+
+            if (userDTO == null){
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok(userDTO);
+
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody CredentialsDTO credentialsDTO){
+        try {
+
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String hashPassword = passwordEncoder.encode(credentialsDTO.password());
+
+            User triedUser = userService.findByUsernameRaw(credentialsDTO.username()).orElse(null);
+
+            if (triedUser != null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+
+            User user = new User();
+            user.setPassword(hashPassword);
+            user.setUsername(credentialsDTO.username());
+
+            user = userService.save(user);
+
+            return ResponseEntity.ok(new UserDTO(user));
+        }catch (Exception e){
+//            throw new RuntimeException(e);
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping
+    public ResponseEntity<?> update(@RequestBody UserDTO userDTO, Principal principal){
+        try {
+            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+
+            if (!loggedUser.getId().equals(userDTO.id())){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            User user = userDTO.toModel();
+            setRelations(user, userDTO);
+            User patchUser = userService.findByIdRaw(userDTO.id()).orElse(null);
+            if (patchUser == null) return ResponseEntity.notFound().build();
+
+            patchUser.mergeWith(user);
+
+            patchUser = userService.update(patchUser);
+
+            return ResponseEntity.ok(new UserDTO(patchUser));
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{userID}")
+    public ResponseEntity<?> deleteById(@PathVariable(name = "userID") Integer id, Principal principal, HttpServletRequest request){
+        try {
+            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+
+            if (!loggedUser.getId().equals(id)){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            User user = userService.findByIdRaw(id).orElse(null);
+            if (user == null) return ResponseEntity.notFound().build();
+
+            userService.deleteById(id);
+
+            request.getSession().invalidate();
+
+            return ResponseEntity.noContent().build();
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
     protected User setRelations(User entity, UserDTO dto) {
         List<Recipe> recipes = new ArrayList<>();
         List<Recipe> savedRecipes = new ArrayList<>();
