@@ -1,6 +1,7 @@
 package com.github.cetoprca.recetasapispringboot.service;
 
 import com.github.cetoprca.recetasapispringboot.DTO.FilterDTO;
+import com.github.cetoprca.recetasapispringboot.DTO.RecipeCardDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeDTO;
 import com.github.cetoprca.recetasapispringboot.model.Cuisine;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
@@ -30,7 +31,7 @@ public class RecipeService extends GenericService<Recipe, RecipeDTO> {
         return new RecipeDTO(entity);
     }
 
-    public List<RecipeDTO> findByFilter(FilterDTO filterDTO){
-        return recipeRepository.findAll(RecipeSpec.conFiltro(filterDTO)).stream().map(this::toDTO).toList();
+    public List<RecipeCardDTO> findByFilter(FilterDTO filterDTO){
+        return recipeRepository.findAll(RecipeSpec.conFiltro(filterDTO)).stream().map(RecipeCardDTO::new).toList();
     }
 }
