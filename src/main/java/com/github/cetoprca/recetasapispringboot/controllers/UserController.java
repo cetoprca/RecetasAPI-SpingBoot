@@ -5,6 +5,7 @@ import com.github.cetoprca.recetasapispringboot.DTO.UserDTO;
 import com.github.cetoprca.recetasapispringboot.model.Rating;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
 import com.github.cetoprca.recetasapispringboot.model.User;
+import com.github.cetoprca.recetasapispringboot.service.ImageService;
 import com.github.cetoprca.recetasapispringboot.service.RatingService;
 import com.github.cetoprca.recetasapispringboot.service.RecipeService;
 import com.github.cetoprca.recetasapispringboot.service.UserService;
@@ -27,11 +28,13 @@ public class UserController {
     private final UserService userService;
     private final RatingService ratingService;
     private final RecipeService recipeService;
+    private final ImageService imageService;
 
-    public UserController(UserService userService, RatingService ratingService, RecipeService recipeService) {
+    public UserController(UserService userService, RatingService ratingService, RecipeService recipeService, ImageService imageService) {
         this.userService = userService;
         this.ratingService = ratingService;
         this.recipeService = recipeService;
+        this.imageService = imageService;
     }
 
     @GetMapping("/{userID}")
@@ -144,6 +147,10 @@ public class UserController {
             dto.ratings().forEach(id -> {
                 ratingService.findByIdRaw(id).ifPresent(ratings::add);
             });
+        }
+
+        if (dto.profilePicturePath() != null){
+            imageService.findByIdRaw(dto.profilePicturePath()).ifPresent(entity::setProfilePicture);
         }
 
         entity.setRecipes(new HashSet<>(recipes));

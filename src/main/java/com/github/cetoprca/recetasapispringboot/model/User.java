@@ -26,9 +26,9 @@ public class User implements BaseModel<User, UserDTO> {
     @Column(name = "biography")
     private String biography;
 
-    @ManyToMany(mappedBy = "usedInUsers")
-    @Column(name = "profilePicturePath")
-    private String profilePicturePath;
+    @ManyToOne
+    @JoinColumn(name = "profile_image_url")
+    private Image profilePicture;
 
     @ManyToMany
     @JoinTable(
@@ -47,13 +47,12 @@ public class User implements BaseModel<User, UserDTO> {
         this.id = userDTO.id();
         this.username = userDTO.username();
         this.biography = userDTO.biography();
-        this.profilePicturePath = userDTO.profilePicturePath();
     }
 
     @Override
     public User mergeWith(User baseModel) {
         if (baseModel.getBiography() != null) this.biography = baseModel.getBiography();
-        if (baseModel.getProfilePicturePath() != null) this.profilePicturePath = baseModel.getProfilePicturePath();
+        if (baseModel.getProfilePicture() != null) this.profilePicture = baseModel.getProfilePicture();
         if (baseModel.getRecipes() != null){
             for (Recipe recipe : baseModel.getRecipes()){
                 if (this.recipes.contains(recipe)){

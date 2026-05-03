@@ -21,7 +21,7 @@ public record UserDTO(
                 user.getId(),
                 user.getUsername(),
                 user.getBiography() == null ? "" : user.getBiography(),
-                user.getProfilePicturePath() == null ? "placeholder" : user.getProfilePicturePath(),
+                user.getProfilePicture() == null ? "placeholder" : user.getProfilePicture().getUrl(),
                 user.getRecipes() == null ? new ArrayList<>() : user.getRecipes().stream().map(Recipe::getId).toList(),
                 user.getSavedRecipes() == null ? new ArrayList<>() : user.getSavedRecipes().stream().map(Recipe::getId).toList(),
                 user.getRatings() == null ? new ArrayList<>() : user.getRatings().stream().map(Rating::getId).toList()

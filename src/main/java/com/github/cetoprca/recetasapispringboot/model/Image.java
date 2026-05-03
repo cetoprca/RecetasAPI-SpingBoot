@@ -1,34 +1,30 @@
 package com.github.cetoprca.recetasapispringboot.model;
 
+import com.github.cetoprca.recetasapispringboot.DTO.ImageDTO;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Data
+@NoArgsConstructor
 public class Image {
     @Id
     private String url;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_image",
-            joinColumns = @JoinColumn(name = "image_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
+    @OneToMany(mappedBy = "profilePicture")
     private Set<User> usedInUsers = new HashSet<>();
-    @ManyToMany
-    @JoinTable(
-            name = "recipe_image",
-            joinColumns = @JoinColumn(name = "image_id"),
-            inverseJoinColumns = @JoinColumn(name = "recipe_id")
-    )
+
+    @OneToMany(mappedBy = "image")
     private Set<Recipe> usedInRecipes = new HashSet<>();
-    @ManyToMany
-    @JoinTable(
-            name = "step_image",
-            joinColumns = @JoinColumn(name = "image_id"),
-            inverseJoinColumns = @JoinColumn(name = "step_id")
-    )
+
+    @OneToMany(mappedBy = "image")
     private Set<Step> usedInSteps = new HashSet<>();
+
+    public Image(ImageDTO imageDTO) {
+        this.url = imageDTO.url();
+    }
 }
