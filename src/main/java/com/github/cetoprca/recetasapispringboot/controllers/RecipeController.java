@@ -63,6 +63,27 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
         return null;
     }
 
+    @GetMapping("/user/saved")
+    public ResponseEntity<?> findSavedByUser(){
+        try {
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication == null){
+                throw new UserPrincipalNotFoundException(null);
+            }
+
+            User loggedUser = userService.findByUsernameRaw(authentication.getName()).orElseThrow();
+
+            FilterDTO filterDTO = FilterDTO.builder().author(loggedUser.getId()).build();
+
+            return ResponseEntity.ok(recipeService.findByFilter(filterDTO));
+
+        }catch (Exception e){
+            return ResponseEntity.ok(e.getMessage());
+        }
+    }
+
     @PostMapping("/filter")
     public ResponseEntity<?> findAll(@RequestBody FilterDTO filterDTO) {
         try {
@@ -103,76 +124,6 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
-
-//    @GetMapping("/user/{userID}")
-//    public ResponseEntity<?> findByUser(@PathVariable(name = "userID") Integer userID, Principal principal){
-//        try {
-//
-//            boolean isAuthor;
-//            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
-//
-//            User user = userService.findByIdRaw(userID).orElse(null);
-//
-//            if (user == null){
-//                return ResponseEntity.notFound().build();
-//            }
-//
-//<<<<<<< HEAD
-//            isAuthor = loggedUser == user;
-//
-//            List<Recipe> userRecipes = user.getRecipes().stream().toList();
-//
-//            userRecipes = userRecipes.stream().filter(recipe -> recipe.getIsPublic() || isAuthor).toList();
-//
-//            return ResponseEntity.ok(userRecipes.stream().map(RecipeDTO::new).toList());
-//=======
-//<<<<<<< HEAD
-//            return ResponseEntity.ok(user.getRecipes().stream().map(RecipeDTO::new).toList());
-//=======
-//            isAuthor = loggedUser == user;
-//
-//            List<RecipeDTO> userRecipes = recipeService.findByFilter(FilterDTO.builder().author(userID).build()).stream().filter(recipe -> recipe.isPublic() || isAuthor).toList();
-//
-//            return ResponseEntity.ok(userRecipes);
-//>>>>>>> bd8fec1 (added search filter to recipes)
-//>>>>>>> feature/filter_recipes
-//
-//        }catch (Exception e){
-//            return ResponseEntity.internalServerError().body(e.getMessage());
-//        }
-//    }
-//
-//    @GetMapping("/user/saved")
-//    public ResponseEntity<?> findBySavedByUser(@PathVariable(name = "userID") Integer userID){
-//        try {
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//            if (authentication == null){
-//                throw new UserPrincipalNotFoundException(null);
-//            }
-//
-//            User loggedUser = userService.findByUsernameRaw(authentication.getName()).orElseThrow();
-//
-//<<<<<<< HEAD
-//            User user = userService.findByIdRaw(userID).orElse(null);
-//
-//            if (user == null){
-//                return ResponseEntity.notFound().build();
-//            }
-//
-//            if (loggedUser != user){
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//            }
-//
-//            return ResponseEntity.ok(user.getSavedRecipes().stream().map(RecipeDTO::new).toList());
-//=======
-//            return ResponseEntity.ok(loggedUser.getSavedRecipes().stream().map(RecipeDTO::new).toList());
-//>>>>>>> bd8fec1 (added search filter to recipes)
-//
-//        }catch (Exception e){
-//            return ResponseEntity.internalServerError().body(e.getMessage());
-//        }
-//    }
 
     @Override
     @PatchMapping
