@@ -25,8 +25,9 @@ public class Step implements BaseModel<Step, StepDTO> {
     @Column(name = "position")
     private Integer position;
 
-    @Column(name = "image")
-    private String image;
+    @ManyToOne
+    @JoinColumn(name = "image_url")
+    private Image image;
 
     @ManyToOne
     @JoinColumn(name = "recipe_id")
@@ -37,7 +38,6 @@ public class Step implements BaseModel<Step, StepDTO> {
         this.title = stepDTO.title();
         this.description = stepDTO.description();
         this.position = stepDTO.position();
-        this.image = stepDTO.image();
     }
 
     @Override

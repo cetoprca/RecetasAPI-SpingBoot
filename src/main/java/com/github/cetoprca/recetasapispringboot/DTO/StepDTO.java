@@ -16,7 +16,7 @@ public record StepDTO(
                 step.getTitle() == null ? "" : step.getTitle(),
                 step.getDescription() == null ? "" : step.getDescription(),
                 step.getPosition() == null ? 0 : step.getPosition(),
-                step.getImage() == null ? "" : step.getImage(),
+                step.getImage() == null ? "" : step.getImage().getUrl(),
                 step.getRecipe() == null ? -1 : step.getRecipe().getId()
                 );
     }

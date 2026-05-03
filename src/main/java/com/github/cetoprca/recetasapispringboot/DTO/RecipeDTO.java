@@ -28,7 +28,7 @@ public record RecipeDTO(
                 recipe.getId(),
                 recipe.getTitle() == null ? "" : recipe.getTitle(),
                 recipe.getDescription() == null ? "" : recipe.getDescription(),
-                recipe.getImage() == null ? "" : recipe.getImage(),
+                recipe.getImage() == null ? "" : recipe.getImage().getUrl(),
                 recipe.getPrepTime() == null ? 0 : recipe.getPrepTime(),
                 recipe.getCookTime() == null ? 0 : recipe.getCookTime(),
                 recipe.getTotalTime() == null ? 0 : recipe.getTotalTime(),

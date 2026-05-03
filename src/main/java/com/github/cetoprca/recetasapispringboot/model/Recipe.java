@@ -25,8 +25,9 @@ public class Recipe implements BaseModel<Recipe, RecipeDTO> {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "image")
-    private String image;
+    @ManyToOne
+    @JoinColumn(name = "image_url")
+    private Image image;
 
     @Column(name = "prepTime")
     private Integer prepTime;
@@ -77,7 +78,6 @@ public class Recipe implements BaseModel<Recipe, RecipeDTO> {
         this.id = recipeDTO.id();
         this.title = recipeDTO.title();
         this.description = recipeDTO.description();
-        this.image = recipeDTO.image();
         this.prepTime = recipeDTO.prepTime();
         this.cookTime = recipeDTO.cookTime();
         this.totalTime = recipeDTO.totalTime();

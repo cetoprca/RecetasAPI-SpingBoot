@@ -4,6 +4,7 @@ import com.github.cetoprca.recetasapispringboot.DTO.StepDTO;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
 import com.github.cetoprca.recetasapispringboot.model.Step;
 import com.github.cetoprca.recetasapispringboot.model.User;
+import com.github.cetoprca.recetasapispringboot.service.ImageService;
 import com.github.cetoprca.recetasapispringboot.service.RecipeService;
 import com.github.cetoprca.recetasapispringboot.service.StepService;
 import com.github.cetoprca.recetasapispringboot.service.UserService;
@@ -21,11 +22,13 @@ public class StepController {
     private final StepService stepService;
     private final RecipeService recipeService;
     private final UserService userService;
+    private final ImageService imageService;
 
-    public StepController(StepService stepService, RecipeService recipeService, UserService userService) {
+    public StepController(StepService stepService, RecipeService recipeService, UserService userService, ImageService imageService) {
         this.stepService = stepService;
         this.recipeService = recipeService;
         this.userService = userService;
+        this.imageService = imageService;
     }
 
     @GetMapping
@@ -165,6 +168,9 @@ public class StepController {
     protected Step setRelations(Step entity, StepDTO dto) {
         if (dto.recipe() != null) {
             recipeService.findByIdRaw(dto.recipe()).ifPresent(entity::setRecipe);
+        }
+        if (dto.image() != null) {
+            imageService.findByIdRaw(dto.image()).ifPresent(entity::setImage);
         }
 
         return entity;
