@@ -12,6 +12,8 @@ import com.github.cetoprca.recetasapispringboot.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +51,15 @@ public class UserController {
 
             return ResponseEntity.ok(userDTO);
 
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/logged")
+    public ResponseEntity<?> findLoggedUser(Principal principal){
+        try {
+            return ResponseEntity.ok(userService.findByUsername(principal.getName()).orElseThrow());
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
