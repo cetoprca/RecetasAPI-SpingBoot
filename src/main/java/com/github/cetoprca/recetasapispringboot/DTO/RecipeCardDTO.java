@@ -8,47 +8,51 @@ import java.util.OptionalDouble;
 
 public record RecipeCardDTO(
         Integer id,
-        List<Integer> tags,
+        List<TagDTO> tags,
         String imageURL,
         String title,
         String description,
         String cuisine,
-        Integer authorId,
-        String authorUsername,
-        String authorProfilePictureURL,
+        UserDTO author,
         Integer stars,
         Integer prepTime,
         Integer cookTime
 ) {
     public RecipeCardDTO(Recipe recipe){
         int stars = 0;
-
         OptionalDouble starsDouble = recipe.getRatings().stream().mapToInt(Rating::getStars).average();
-
         if (starsDouble.isPresent()){
             stars = Math.toIntExact(Math.round(starsDouble.getAsDouble()));
         }
 
-        String userProfilePicture = "";
+        UserDTO userDTO = null;
         if (recipe.getAuthor() != null){
-            if (recipe.getAuthor().getProfilePicture() != null){
-                userProfilePicture = recipe.getAuthor().getProfilePicture().getUrl();
-            }
+            userDTO = new UserDTO(recipe.getAuthor());
         }
+
+        String imageUrl = "";
+        if (recipe.getImage() != null){
+            imageUrl = recipe.getImage().getUrl();
+        }
+
+        String cuisine = "";
+        if (recipe.getCuisine() != null){
+            cuisine = recipe.getCuisine().getName();
+        }
+
+        List<TagDTO> tags = recipe.getTags().stream().map(TagDTO::new).toList();
 
         this(
                 recipe.getId(),
-                recipe.getTags() == null ? new ArrayList<>() : recipe.getTags().stream().map(Tag::getId).toList(),
-                recipe.getImage() == null ? "" : recipe.getImage().getUrl(),
-                recipe.getTitle() == null ? "" : recipe.getTitle(),
-                recipe.getDescription() == null ? "" : recipe.getDescription(),
-                recipe.getCuisine() == null ? "" : recipe.getCuisine().getName(),
-                recipe.getAuthor() == null ? -1 : recipe.getAuthor().getId(),
-                recipe.getAuthor() == null ? "" : recipe.getAuthor().getUsername(),
-                userProfilePicture,
+                tags,
+                imageUrl,
+                recipe.getTitle(),
+                recipe.getDescription(),
+                cuisine,
+                userDTO,
                 stars,
-                recipe.getPrepTime() == null ? 0 : recipe.getPrepTime(),
-                recipe.getCookTime() == null ? 0 : recipe.getCookTime()
+                recipe.getPrepTime(),
+                recipe.getCookTime()
         );
     }
 }

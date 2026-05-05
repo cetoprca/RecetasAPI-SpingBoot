@@ -31,7 +31,7 @@ public class RecipeService extends GenericService<Recipe, RecipeDTO> {
         return new RecipeDTO(entity);
     }
 
-    public List<RecipeCardDTO> findByFilter(FilterDTO filterDTO){
-        return recipeRepository.findAll(RecipeSpec.conFiltro(filterDTO)).stream().map(RecipeCardDTO::new).toList();
+    public List<Recipe> findByFilter(FilterDTO filterDTO){
+        return recipeRepository.findAll(RecipeSpec.conFiltro(filterDTO));
     }
 }
