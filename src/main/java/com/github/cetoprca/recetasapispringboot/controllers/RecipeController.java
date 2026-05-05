@@ -1,6 +1,7 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
 import com.github.cetoprca.recetasapispringboot.DTO.FilterDTO;
+import com.github.cetoprca.recetasapispringboot.DTO.RecipeCardDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeDTO;
 import com.github.cetoprca.recetasapispringboot.model.*;
 import com.github.cetoprca.recetasapispringboot.service.*;
@@ -77,7 +78,7 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
 
             FilterDTO filterDTO = FilterDTO.builder().author(loggedUser.getId()).build();
 
-            return ResponseEntity.ok(recipeService.findByFilter(filterDTO));
+            return ResponseEntity.ok(recipeService.findByFilter(filterDTO).stream().map(RecipeCardDTO::new));
 
         }catch (Exception e){
             return ResponseEntity.ok(e.getMessage());
@@ -87,9 +88,7 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
     @PostMapping("/filter")
     public ResponseEntity<?> findAll(@RequestBody FilterDTO filterDTO) {
         try {
-
-            return ResponseEntity.ok(recipeService.findByFilter(filterDTO).stream().filter(RecipeDTO::isPublic));
-
+            return ResponseEntity.ok(recipeService.findByFilter(filterDTO).stream().filter(Recipe::getIsPublic).map(RecipeCardDTO::new));
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
