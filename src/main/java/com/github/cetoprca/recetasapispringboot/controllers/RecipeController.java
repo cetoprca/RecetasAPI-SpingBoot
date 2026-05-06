@@ -88,7 +88,7 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
     @PostMapping("/filter")
     public ResponseEntity<?> findAll(@RequestBody FilterDTO filterDTO) {
         try {
-            return ResponseEntity.ok(recipeService.findByFilter(filterDTO).stream().filter(Recipe::getIsPublic).map(RecipeCardDTO::new));
+            return ResponseEntity.ok(recipeService.findByFilter(filterDTO).stream().filter(Recipe::getIsPublic).map(RecipeCardDTO::new).toList());
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
