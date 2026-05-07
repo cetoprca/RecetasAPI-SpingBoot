@@ -3,6 +3,7 @@ package com.github.cetoprca.recetasapispringboot.controllers;
 import com.github.cetoprca.recetasapispringboot.DTO.FilterDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeCardDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeDTO;
+import com.github.cetoprca.recetasapispringboot.DTO.UserDTO;
 import com.github.cetoprca.recetasapispringboot.model.*;
 import com.github.cetoprca.recetasapispringboot.service.*;
 import org.springframework.http.HttpStatus;
@@ -13,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/recipe")
@@ -62,27 +60,6 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
         return null;
-    }
-
-    @GetMapping("/user/saved")
-    public ResponseEntity<?> findSavedByUser(){
-        try {
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            if (authentication == null){
-                throw new UserPrincipalNotFoundException(null);
-            }
-
-            User loggedUser = userService.findByUsernameRaw(authentication.getName()).orElseThrow();
-
-            FilterDTO filterDTO = FilterDTO.builder().author(loggedUser.getId()).build();
-
-            return ResponseEntity.ok(recipeService.findByFilter(filterDTO).stream().map(RecipeCardDTO::new));
-
-        }catch (Exception e){
-            return ResponseEntity.ok(e.getMessage());
-        }
     }
 
     @PostMapping("/filter")

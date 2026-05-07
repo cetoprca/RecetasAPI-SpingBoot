@@ -1,6 +1,7 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
 import com.github.cetoprca.recetasapispringboot.DTO.CredentialsDTO;
+import com.github.cetoprca.recetasapispringboot.DTO.RecipeCardDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.UserDTO;
 import com.github.cetoprca.recetasapispringboot.model.Rating;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
@@ -18,10 +19,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -134,6 +134,55 @@ public class UserController {
             return ResponseEntity.noContent().build();
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/save/{recipeID}")
+    public ResponseEntity<?> saveRecipe(@PathVariable(name = "recipeID") Integer recipeID, Principal principal){
+        try {
+            System.out.println("userController save recipe");
+            if (principal == null || principal.getName() == null){
+                return ResponseEntity.internalServerError().body("No user logged");
+            }
+
+            User user = userService.findByUsernameRaw(principal.getName()).get();
+
+            Optional<Recipe> recipeOpt = recipeService.findByIdRaw(recipeID);
+            if (!recipeOpt.isPresent()){
+                return ResponseEntity.badRequest().body("Recipe not found");
+            }
+            Recipe recipe = recipeOpt.get();
+
+            Set<Recipe> savedRecipes = user.getSavedRecipes();
+            savedRecipes.add(recipe);
+            user.setSavedRecipes(savedRecipes);
+
+            user = userService.save(user);
+
+            return ResponseEntity.ok(new UserDTO(user));
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/user/saved")
+    public ResponseEntity<?> findSavedByUser(){
+        try {
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication == null){
+                throw new UserPrincipalNotFoundException(null);
+            }
+
+            User loggedUser = userService.findByUsernameRaw(authentication.getName()).orElseThrow();
+
+            List<RecipeCardDTO> recipeCardDTOs = loggedUser.getSavedRecipes().stream().map(RecipeCardDTO::new).toList();
+
+            return ResponseEntity.ok(recipeCardDTOs);
+
+        }catch (Exception e){
+            return ResponseEntity.ok(e.getMessage());
         }
     }
 
