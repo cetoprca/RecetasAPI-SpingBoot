@@ -1,11 +1,19 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
 import com.github.cetoprca.recetasapispringboot.DTO.FilterDTO;
+import com.github.cetoprca.recetasapispringboot.DTO.PaginationDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeCardDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeDTO;
+import com.github.cetoprca.recetasapispringboot.DTO.RecipeFilterRequest;
 import com.github.cetoprca.recetasapispringboot.DTO.UserDTO;
 import com.github.cetoprca.recetasapispringboot.model.*;
+import com.github.cetoprca.recetasapispringboot.repository.filters.RecipeSpec;
 import com.github.cetoprca.recetasapispringboot.service.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -63,25 +71,80 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<?> findAll(@RequestBody FilterDTO filterDTO, Principal principal) {
+    public ResponseEntity<?> findAll(@RequestBody RecipeFilterRequest request, Principal principal) {
         try {
-
             if (principal == null || principal.getName() == null){
                 return ResponseEntity.internalServerError().body("No user logged");
             }
 
             User userLogged = userService.findByUsernameRaw(principal.getName()).get();
 
-            List<RecipeCardDTO> recipeDTOS = recipeService.findByFilter(filterDTO).stream().map(recipe -> {
-                if(!recipe.getIsPublic() && !recipe.getAuthor().equals(userLogged)) return null;
-                boolean saved = userLogged.getSavedRecipes().contains(recipe);
-                RecipeCardDTO recipeCardDTO = new RecipeCardDTO(recipe);
-                recipeCardDTO.setIsSaved(saved);
-                return recipeCardDTO;
-            }).toList();
+            FilterDTO filterDTO = request.getFilter();
+            PaginationDTO paginationDTO = request.getPagination();
 
-            return ResponseEntity.ok(recipeDTOS);
+            int page = paginationDTO != null ? paginationDTO.page() : 0;
+            int size = paginationDTO != null ? paginationDTO.size() : 20;
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "creationDate"));
+
+            Specification<Recipe> privacySpec = (root, query, cb) ->
+                cb.or(
+                    cb.isTrue(root.get("isPublic")),
+                    cb.equal(root.get("author"), userLogged)
+                );
+
+            Specification<Recipe> spec = privacySpec;
+            if (filterDTO != null) {
+                spec = RecipeSpec.conFiltro(filterDTO).and(privacySpec);
+            }
+
+            Page<RecipeCardDTO> recipePage = recipeService.findByFilter(spec, pageable)
+                .map(recipe -> {
+                    boolean saved = userLogged.getSavedRecipes().contains(recipe);
+                    RecipeCardDTO cardDTO = new RecipeCardDTO(recipe);
+                    cardDTO.setIsSaved(saved);
+                    return cardDTO;
+                });
+
+            return ResponseEntity.ok(recipePage);
         }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/byUser/{userId}")
+    public ResponseEntity<?> findByUserId(@PathVariable Integer userId,
+                                           @RequestBody(required = false) PaginationDTO pagination,
+                                           Principal principal) {
+        try {
+            if (principal == null || principal.getName() == null){
+                return ResponseEntity.internalServerError().body("No user logged");
+            }
+
+            User userLogged = userService.findByUsernameRaw(principal.getName()).get();
+
+            int page = pagination != null ? pagination.page() : 0;
+            int size = pagination != null ? pagination.size() : 20;
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "creationDate"));
+
+            Specification<Recipe> privacySpec = (root, query, cb) ->
+                cb.or(
+                    cb.isTrue(root.get("isPublic")),
+                    cb.equal(root.get("author"), userLogged)
+                );
+
+            Specification<Recipe> spec = privacySpec
+                .and((root, query, cb) -> cb.equal(root.get("author").get("id"), userId));
+
+            Page<RecipeCardDTO> recipePage = recipeService.findByFilter(spec, pageable)
+                .map(recipe -> {
+                    boolean saved = userLogged.getSavedRecipes().contains(recipe);
+                    RecipeCardDTO cardDTO = new RecipeCardDTO(recipe);
+                    cardDTO.setIsSaved(saved);
+                    return cardDTO;
+                });
+
+            return ResponseEntity.ok(recipePage);
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }

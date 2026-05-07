@@ -1,6 +1,7 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
 import com.github.cetoprca.recetasapispringboot.DTO.CredentialsDTO;
+import com.github.cetoprca.recetasapispringboot.DTO.PaginationDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeCardDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.UserDTO;
 import com.github.cetoprca.recetasapispringboot.model.Rating;
@@ -11,6 +12,10 @@ import com.github.cetoprca.recetasapispringboot.service.RatingService;
 import com.github.cetoprca.recetasapispringboot.service.RecipeService;
 import com.github.cetoprca.recetasapispringboot.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -169,23 +174,28 @@ public class UserController {
         }
     }
 
-    @GetMapping("/savedRecipes")
-    public ResponseEntity<?> findSavedByUser(Principal principal){
+    @PostMapping("/savedRecipes")
+    public ResponseEntity<?> findSavedByUser(@RequestBody(required = false) PaginationDTO pagination,
+                                              Principal principal) {
         try {
-
             if (principal == null || principal.getName() == null){
                 throw new UserPrincipalNotFoundException(null);
             }
 
             User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
 
-            List<RecipeCardDTO> recipeCardDTOs = loggedUser.getSavedRecipes().stream().map(recipe -> {
-                RecipeCardDTO recipeCardDTO = new RecipeCardDTO(recipe);
-                recipeCardDTO.setIsSaved(true);
-                return recipeCardDTO;
-            }).toList();
+            int page = pagination != null ? pagination.page() : 0;
+            int size = pagination != null ? pagination.size() : 20;
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "creationDate"));
 
-            return ResponseEntity.ok(recipeCardDTOs);
+            Page<RecipeCardDTO> recipePage = recipeService.findSavedRecipesByUserId(loggedUser.getId(), pageable)
+                .map(recipe -> {
+                    RecipeCardDTO cardDTO = new RecipeCardDTO(recipe);
+                    cardDTO.setIsSaved(true);
+                    return cardDTO;
+                });
+
+            return ResponseEntity.ok(recipePage);
 
         }catch (Exception e){
             return ResponseEntity.ok(e.getMessage());

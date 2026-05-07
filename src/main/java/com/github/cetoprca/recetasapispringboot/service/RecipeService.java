@@ -1,26 +1,20 @@
 package com.github.cetoprca.recetasapispringboot.service;
 
-import com.github.cetoprca.recetasapispringboot.DTO.FilterDTO;
-import com.github.cetoprca.recetasapispringboot.DTO.RecipeCardDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeDTO;
-import com.github.cetoprca.recetasapispringboot.model.Cuisine;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
-import com.github.cetoprca.recetasapispringboot.model.User;
 import com.github.cetoprca.recetasapispringboot.repository.RecipeRepository;
-import com.github.cetoprca.recetasapispringboot.repository.filters.RecipeSpec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RecipeService extends GenericService<Recipe, RecipeDTO> {
 
     @Autowired
     private RecipeRepository recipeRepository;
-
 
     protected RecipeService(JpaRepository<Recipe, Integer> repository) {
         super(repository);
@@ -31,7 +25,15 @@ public class RecipeService extends GenericService<Recipe, RecipeDTO> {
         return new RecipeDTO(entity);
     }
 
-    public List<Recipe> findByFilter(FilterDTO filterDTO){
-        return recipeRepository.findAll(RecipeSpec.conFiltro(filterDTO));
+    public Page<Recipe> findByFilter(Specification<Recipe> spec, Pageable pageable) {
+        return recipeRepository.findAll(spec, pageable);
+    }
+
+    public Page<Recipe> findSavedRecipesByUserId(Integer userId, Pageable pageable) {
+        return recipeRepository.findSavedRecipesByUserId(userId, pageable);
+    }
+
+    public Page<Recipe> findByAuthorId(Integer userId, Pageable pageable) {
+        return recipeRepository.findByAuthorId(userId, pageable);
     }
 }
