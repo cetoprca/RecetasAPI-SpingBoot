@@ -154,7 +154,11 @@ public class UserController {
             Recipe recipe = recipeOpt.get();
 
             Set<Recipe> savedRecipes = user.getSavedRecipes();
-            savedRecipes.add(recipe);
+            if(savedRecipes.contains(recipe)) {
+                savedRecipes.remove(recipe);
+            }else {
+                savedRecipes.add(recipe);
+            }
             user.setSavedRecipes(savedRecipes);
 
             user = userService.save(user);
@@ -165,19 +169,21 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/saved")
-    public ResponseEntity<?> findSavedByUser(){
+    @GetMapping("/savedRecipes")
+    public ResponseEntity<?> findSavedByUser(Principal principal){
         try {
 
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            if (authentication == null){
+            if (principal == null || principal.getName() == null){
                 throw new UserPrincipalNotFoundException(null);
             }
 
-            User loggedUser = userService.findByUsernameRaw(authentication.getName()).orElseThrow();
+            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
 
-            List<RecipeCardDTO> recipeCardDTOs = loggedUser.getSavedRecipes().stream().map(RecipeCardDTO::new).toList();
+            List<RecipeCardDTO> recipeCardDTOs = loggedUser.getSavedRecipes().stream().map(recipe -> {
+                RecipeCardDTO recipeCardDTO = new RecipeCardDTO(recipe);
+                recipeCardDTO.setIsSaved(true);
+                return recipeCardDTO;
+            }).toList();
 
             return ResponseEntity.ok(recipeCardDTOs);
 

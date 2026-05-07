@@ -63,9 +63,24 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<?> findAll(@RequestBody FilterDTO filterDTO) {
+    public ResponseEntity<?> findAll(@RequestBody FilterDTO filterDTO, Principal principal) {
         try {
-            return ResponseEntity.ok(recipeService.findByFilter(filterDTO).stream().filter(Recipe::getIsPublic).map(RecipeCardDTO::new).toList());
+
+            if (principal == null || principal.getName() == null){
+                return ResponseEntity.internalServerError().body("No user logged");
+            }
+
+            User userLogged = userService.findByUsernameRaw(principal.getName()).get();
+
+            List<RecipeCardDTO> recipeDTOS = recipeService.findByFilter(filterDTO).stream().map(recipe -> {
+                if(!recipe.getIsPublic() && !recipe.getAuthor().equals(userLogged)) return null;
+                boolean saved = userLogged.getSavedRecipes().contains(recipe);
+                RecipeCardDTO recipeCardDTO = new RecipeCardDTO(recipe);
+                recipeCardDTO.setIsSaved(saved);
+                return recipeCardDTO;
+            }).toList();
+
+            return ResponseEntity.ok(recipeDTOS);
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -119,6 +134,8 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
             }
 
             RecipeCardDTO recipeDTO = new RecipeCardDTO(recipe);
+
+            if (loggedUser.getSavedRecipes().contains(recipe)) recipeDTO.setIsSaved(true);
 
             if (recipe.getIsPublic() || isAuthor){
                 return ResponseEntity.ok(recipeDTO);
