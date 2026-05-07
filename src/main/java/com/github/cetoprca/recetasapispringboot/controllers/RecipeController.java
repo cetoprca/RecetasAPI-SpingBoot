@@ -3,6 +3,7 @@ package com.github.cetoprca.recetasapispringboot.controllers;
 import com.github.cetoprca.recetasapispringboot.DTO.FilterDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeCardDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeDTO;
+import com.github.cetoprca.recetasapispringboot.DTO.UserDTO;
 import com.github.cetoprca.recetasapispringboot.model.*;
 import com.github.cetoprca.recetasapispringboot.service.*;
 import org.springframework.http.HttpStatus;
@@ -13,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/recipe")
@@ -64,31 +62,25 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
         return null;
     }
 
-    @GetMapping("/user/saved")
-    public ResponseEntity<?> findSavedByUser(){
+    @PostMapping("/filter")
+    public ResponseEntity<?> findAll(@RequestBody FilterDTO filterDTO, Principal principal) {
         try {
 
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            if (authentication == null){
-                throw new UserPrincipalNotFoundException(null);
+            if (principal == null || principal.getName() == null){
+                return ResponseEntity.internalServerError().body("No user logged");
             }
 
-            User loggedUser = userService.findByUsernameRaw(authentication.getName()).orElseThrow();
+            User userLogged = userService.findByUsernameRaw(principal.getName()).get();
 
-            FilterDTO filterDTO = FilterDTO.builder().author(loggedUser.getId()).build();
+            List<RecipeCardDTO> recipeDTOS = recipeService.findByFilter(filterDTO).stream().map(recipe -> {
+                if(!recipe.getIsPublic() && !recipe.getAuthor().equals(userLogged)) return null;
+                boolean saved = userLogged.getSavedRecipes().contains(recipe);
+                RecipeCardDTO recipeCardDTO = new RecipeCardDTO(recipe);
+                recipeCardDTO.setIsSaved(saved);
+                return recipeCardDTO;
+            }).toList();
 
-            return ResponseEntity.ok(recipeService.findByFilter(filterDTO).stream().map(RecipeCardDTO::new));
-
-        }catch (Exception e){
-            return ResponseEntity.ok(e.getMessage());
-        }
-    }
-
-    @PostMapping("/filter")
-    public ResponseEntity<?> findAll(@RequestBody FilterDTO filterDTO) {
-        try {
-            return ResponseEntity.ok(recipeService.findByFilter(filterDTO).stream().filter(Recipe::getIsPublic).map(RecipeCardDTO::new).toList());
+            return ResponseEntity.ok(recipeDTOS);
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -142,6 +134,8 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
             }
 
             RecipeCardDTO recipeDTO = new RecipeCardDTO(recipe);
+
+            if (loggedUser.getSavedRecipes().contains(recipe)) recipeDTO.setIsSaved(true);
 
             if (recipe.getIsPublic() || isAuthor){
                 return ResponseEntity.ok(recipeDTO);
