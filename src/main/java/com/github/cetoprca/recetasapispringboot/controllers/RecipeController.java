@@ -124,6 +124,36 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
         }
     }
 
+    @GetMapping("/card/{recipeID}")
+    public ResponseEntity<?> findCardById(@PathVariable(name = "recipeID") Integer recipeID, Principal principal){
+        try {
+
+            boolean isAuthor = false;
+            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+
+            Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
+
+            if (recipe == null){
+                return ResponseEntity.notFound().build();
+            }
+
+            if (Objects.equals(loggedUser.getId(), recipe.getAuthor().getId())){
+                isAuthor = true;
+            }
+
+            RecipeCardDTO recipeDTO = new RecipeCardDTO(recipe);
+
+            if (recipe.getIsPublic() || isAuthor){
+                return ResponseEntity.ok(recipeDTO);
+            }else {
+                return ResponseEntity.ok().build();
+            }
+
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
     @Override
     @PatchMapping
     public ResponseEntity<?> update(@RequestBody RecipeDTO entityDTO) {
