@@ -73,7 +73,7 @@ public class RatingController{
     public ResponseEntity<?> save(@PathVariable(name = "recipeID") Integer recipeID, @RequestBody RatingDTO entityDTO, Principal principal){
         try {
 
-            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
             Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
 
@@ -101,7 +101,7 @@ public class RatingController{
     public ResponseEntity<?> update(@PathVariable(name = "recipeID") Integer recipeID, @RequestBody RatingDTO entityDTO, Principal principal){
         try {
 
-            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
             Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
 
@@ -139,7 +139,7 @@ public class RatingController{
     @DeleteMapping("/{ratingID}")
     public ResponseEntity<?> deleteById(@PathVariable(name = "recipeID") Integer recipeID, @PathVariable(name = "ratingID") Integer stepID, Principal principal){
         try {
-            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
             Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
 

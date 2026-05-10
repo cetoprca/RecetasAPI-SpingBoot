@@ -10,7 +10,7 @@ public record CuisineDTO(
         Integer id,
         String name,
         List<Integer> recipes
-) implements GenericDTO<Cuisine>{
+) implements GenericDTO<Cuisine, Integer>{
     public CuisineDTO(Cuisine cuisine){
         this(
                 cuisine.getId(),
@@ -25,7 +25,7 @@ public record CuisineDTO(
     }
 
     @Override
-    public GenericDTO<Cuisine> fromModel(Cuisine entity) {
+    public GenericDTO<Cuisine, Integer> fromModel(Cuisine entity) {
         return new CuisineDTO(entity);
     }
 

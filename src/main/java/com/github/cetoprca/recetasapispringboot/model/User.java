@@ -15,11 +15,10 @@ import java.util.Set;
 @NoArgsConstructor @AllArgsConstructor
 public class User implements BaseModel<User, UserDTO> {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
 
-    @Column(name = "username", unique = true)
-    private String username;
+    @Column(name = "display_name")
+    private String displayName;
     @Column(name = "password")
     private String password;
 
@@ -45,7 +44,7 @@ public class User implements BaseModel<User, UserDTO> {
 
     public User(UserDTO userDTO) {
         this.id = userDTO.id();
-        this.username = userDTO.username();
+        this.displayName = userDTO.displayName();
         this.biography = userDTO.biography();
     }
 

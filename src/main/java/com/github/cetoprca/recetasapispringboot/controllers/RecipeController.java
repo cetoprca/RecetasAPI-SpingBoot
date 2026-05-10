@@ -26,7 +26,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("api/recipe")
-public class RecipeController extends GenericController<Recipe, RecipeDTO> {
+public class RecipeController extends GenericController<Recipe, RecipeDTO, Integer> {
 
     private final RecipeService recipeService;
     private final IngredientService ingredientService;
@@ -59,9 +59,9 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
                 throw new UserPrincipalNotFoundException(null);
             }
 
-            User loggedUser = userService.findByUsernameRaw(authentication.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(authentication.getName()).orElseThrow();
 
-            if (!loggedUser.getUsername().equals("root")){
+            if (!loggedUser.getDisplayName().equals("root")){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
         } catch (UserPrincipalNotFoundException e) {
@@ -77,7 +77,7 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
                 return ResponseEntity.internalServerError().body("No user logged");
             }
 
-            User userLogged = userService.findByUsernameRaw(principal.getName()).get();
+            User userLogged = userService.findByIdRaw(principal.getName()).get();
 
             FilterDTO filterDTO = request.getFilter();
             PaginationDTO paginationDTO = request.getPagination();
@@ -112,7 +112,7 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
     }
 
     @PostMapping("/byUser/{userId}")
-    public ResponseEntity<?> findByUserId(@PathVariable Integer userId,
+    public ResponseEntity<?> findByUserId(@PathVariable String userId,
                                            @RequestBody(required = false) PaginationDTO pagination,
                                            Principal principal) {
         try {
@@ -120,7 +120,7 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
                 return ResponseEntity.internalServerError().body("No user logged");
             }
 
-            User userLogged = userService.findByUsernameRaw(principal.getName()).get();
+            User userLogged = userService.findByIdRaw(principal.getName()).get();
 
             int page = pagination != null ? pagination.page() : 0;
             int size = pagination != null ? pagination.size() : 20;
@@ -154,7 +154,7 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
         try {
 
             boolean isAuthor = false;
-            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
             Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
 
@@ -184,7 +184,7 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
         try {
 
             boolean isAuthor = false;
-            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
             Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
 
@@ -221,15 +221,16 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
                 throw new UserPrincipalNotFoundException(null);
             }
 
-            User loggedUser = userService.findByUsernameRaw(authentication.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(authentication.getName()).orElseThrow();
 
             Recipe recipe = recipeService.findByIdRaw(entityDTO.id()).orElse(null);
+
 
             if (recipe == null){
                 return ResponseEntity.notFound().build();
             }
 
-            if (recipe.getAuthor() != loggedUser && !loggedUser.getUsername().equals("root")){
+            if (recipe.getAuthor() != loggedUser && !loggedUser.getDisplayName().equals("root")){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
@@ -250,7 +251,7 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
                 throw new UserPrincipalNotFoundException(null);
             }
 
-            User loggedUser = userService.findByUsernameRaw(authentication.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(authentication.getName()).orElseThrow();
 
             Recipe recipe = recipeService.findByIdRaw(id).orElse(null);
 
@@ -258,7 +259,7 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO> {
                 return ResponseEntity.notFound().build();
             }
 
-            if (recipe.getAuthor() != loggedUser && !loggedUser.getUsername().equals("root")){
+            if (recipe.getAuthor() != loggedUser && !loggedUser.getDisplayName().equals("root")){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 public record ImageDTO(
         String url,
-        List<Integer> usedInUsers,
+        List<String> usedInUsers,
         List<Integer> usedInRecipes,
         List<Integer> usedInSteps
 ) {
@@ -19,7 +19,7 @@ public record ImageDTO(
         );
     }
 
-    public GenericDTO<Rating> fromModel(Rating entity) {
+    public GenericDTO<Rating, Integer> fromModel(Rating entity) {
         return new RatingDTO(entity);
     }
 

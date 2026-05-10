@@ -10,7 +10,7 @@ public record TagDTO(
         Integer id,
         String name,
         List<Integer> recipes
-) implements GenericDTO<Tag>{
+) implements GenericDTO<Tag, Integer>{
     public TagDTO(Tag tag){
         this(
                 tag.getId(),
@@ -24,7 +24,7 @@ public record TagDTO(
     }
 
     @Override
-    public GenericDTO<Tag> fromModel(Tag entity) {
+    public GenericDTO<Tag, Integer> fromModel(Tag entity) {
         return new TagDTO(entity);
     }
 

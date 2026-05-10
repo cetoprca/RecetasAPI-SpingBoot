@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class TagService extends GenericService<Tag, TagDTO>{
+public class TagService extends GenericService<Tag, TagDTO, Integer>{
 
     @Autowired
     private TagRepository tagRepository;

@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/{userID}")
-    public ResponseEntity<?> findAll(@PathVariable(name = "userID") Integer id){
+    public ResponseEntity<?> findAll(@PathVariable(name = "userID") String id){
         try {
 
             UserDTO userDTO = userService.findById(id).orElse(null);
@@ -64,7 +64,7 @@ public class UserController {
     @GetMapping("/logged")
     public ResponseEntity<?> findLoggedUser(Principal principal){
         try {
-            return ResponseEntity.ok(userService.findByUsername(principal.getName()).orElseThrow());
+            return ResponseEntity.ok(userService.findByIdRaw(principal.getName()).map(u -> new UserDTO(u)).orElseThrow());
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -77,15 +77,16 @@ public class UserController {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             String hashPassword = passwordEncoder.encode(credentialsDTO.password());
 
-            User triedUser = userService.findByUsernameRaw(credentialsDTO.username()).orElse(null);
+            User triedUser = userService.findByIdRaw(credentialsDTO.handle()).orElse(null);
 
             if (triedUser != null){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
 
             User user = new User();
+            user.setId(credentialsDTO.handle());
+            user.setDisplayName(credentialsDTO.displayName());
             user.setPassword(hashPassword);
-            user.setUsername(credentialsDTO.username());
 
             user = userService.save(user);
 
@@ -99,7 +100,7 @@ public class UserController {
     @PatchMapping
     public ResponseEntity<?> update(@RequestBody UserDTO userDTO, Principal principal){
         try {
-            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
             if (!loggedUser.getId().equals(userDTO.id())){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -121,9 +122,9 @@ public class UserController {
     }
 
     @DeleteMapping("/{userID}")
-    public ResponseEntity<?> deleteById(@PathVariable(name = "userID") Integer id, Principal principal, HttpServletRequest request){
+    public ResponseEntity<?> deleteById(@PathVariable(name = "userID") String id, Principal principal, HttpServletRequest request){
         try {
-            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
             if (!loggedUser.getId().equals(id)){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -150,7 +151,7 @@ public class UserController {
                 return ResponseEntity.internalServerError().body("No user logged");
             }
 
-            User user = userService.findByUsernameRaw(principal.getName()).get();
+            User user = userService.findByIdRaw(principal.getName()).get();
 
             Optional<Recipe> recipeOpt = recipeService.findByIdRaw(recipeID);
             if (!recipeOpt.isPresent()){
@@ -182,7 +183,7 @@ public class UserController {
                 throw new UserPrincipalNotFoundException(null);
             }
 
-            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
             int page = pagination != null ? pagination.page() : 0;
             int size = pagination != null ? pagination.size() : 20;

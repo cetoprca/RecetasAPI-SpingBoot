@@ -18,7 +18,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
     Optional<Recipe> findByTitle(String title);
 
     List<Recipe> findByAuthor(User user);
-    List<Recipe> findByAuthor_id(Integer user_id);
+    List<Recipe> findByAuthor_id(String user_id);
 
     List<Recipe> findByCuisine(Cuisine cuisine);
     List<Recipe> findByCuisine_id(Integer cuisine_id);
@@ -27,9 +27,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
     List<Recipe> findDistinctByIngredients_IdIn(Collection<Integer> ingredientIds);
 
     @Query("SELECT r FROM Recipe r WHERE r.author.id = :userId")
-    Page<Recipe> findByAuthorId(@Param("userId") Integer userId, Pageable pageable);
+    Page<Recipe> findByAuthorId(@Param("userId") String userId, Pageable pageable);
 
     @Query(value = "SELECT r FROM Recipe r WHERE r IN (SELECT u.savedRecipes FROM User u WHERE u.id = :userId)",
            countQuery = "SELECT COUNT(r) FROM Recipe r WHERE r IN (SELECT u.savedRecipes FROM User u WHERE u.id = :userId)")
-    Page<Recipe> findSavedRecipesByUserId(@Param("userId") Integer userId, Pageable pageable);
+    Page<Recipe> findSavedRecipesByUserId(@Param("userId") String userId, Pageable pageable);
 }

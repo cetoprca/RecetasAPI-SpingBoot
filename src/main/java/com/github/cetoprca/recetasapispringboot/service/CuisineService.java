@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class CuisineService extends GenericService<Cuisine, CuisineDTO>{
+public class CuisineService extends GenericService<Cuisine, CuisineDTO, Integer>{
 
     @Autowired
     private CuisineRepository cuisineRepository;

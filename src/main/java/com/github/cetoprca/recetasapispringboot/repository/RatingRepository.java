@@ -12,5 +12,5 @@ public interface RatingRepository extends JpaRepository<Rating, Integer> {
     Optional<Rating> findByRecipe_id(Integer recipe_id);
 
     Optional<Rating> findByUser(User author);
-    Optional<Rating> findByUser_id(Integer author_id);
+    Optional<Rating> findByUser_id(String author_id);
 }

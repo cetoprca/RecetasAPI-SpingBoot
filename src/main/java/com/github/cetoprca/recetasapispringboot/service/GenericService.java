@@ -5,11 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class GenericService<T, D> {
+public abstract class GenericService<T, D, ID> {
 
-    protected final JpaRepository<T, Integer> repository;
+    protected final JpaRepository<T, ID> repository;
 
-    protected GenericService(JpaRepository<T, Integer> repository) {
+    protected GenericService(JpaRepository<T, ID> repository) {
         this.repository = repository;
     }
 
@@ -22,12 +22,12 @@ public abstract class GenericService<T, D> {
                 .toList();
     }
 
-    public Optional<D> findById(int id) {
+    public Optional<D> findById(ID id) {
         return repository.findById(id)
                 .map(this::toDTO);
     }
 
-    public Optional<T> findByIdRaw(int id) {
+    public Optional<T> findByIdRaw(ID id) {
         return repository.findById(id);
     }
 
@@ -43,7 +43,7 @@ public abstract class GenericService<T, D> {
         repository.delete(entity);
     }
 
-    public void deleteById(int id) {
+    public void deleteById(ID id) {
         repository.deleteById(id);
     }
 }

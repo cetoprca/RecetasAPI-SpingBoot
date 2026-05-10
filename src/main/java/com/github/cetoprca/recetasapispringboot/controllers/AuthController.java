@@ -32,7 +32,7 @@ public class AuthController {
 
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            credentialsDTO.username(),
+                            credentialsDTO.handle(),
                             credentialsDTO.password()
                     )
             );

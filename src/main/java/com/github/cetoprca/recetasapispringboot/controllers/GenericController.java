@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public abstract class GenericController<T extends BaseModel<T, D>, D extends GenericDTO<T>> {
+public abstract class GenericController<T extends BaseModel<T, D>, D extends GenericDTO<T, ID>, ID> {
 
-    protected final GenericService<T, D> service;
-    protected GenericController(GenericService<T, D> genericService){
+    protected final GenericService<T, D, ID> service;
+    protected GenericController(GenericService<T, D, ID> genericService){
         service = genericService;
     }
 
@@ -69,7 +69,7 @@ public abstract class GenericController<T extends BaseModel<T, D>, D extends Gen
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable(name = "id") Integer id){
+    public ResponseEntity<?> deleteById(@PathVariable(name = "id") ID id){
         try {
 
             T entity = service.findByIdRaw(id).orElse(null);

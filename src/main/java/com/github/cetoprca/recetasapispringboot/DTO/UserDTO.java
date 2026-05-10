@@ -8,18 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record UserDTO(
-        Integer id,
-        String username,
+        String id,
+        String displayName,
         String biography,
         String profilePicturePath,
         List<Integer> recipes,
         List<Integer> savedRecipes,
         List<Integer> ratings
-) implements GenericDTO<User> {
+) implements GenericDTO<User, String> {
     public UserDTO(User user){
         this(
                 user.getId(),
-                user.getUsername(),
+                user.getDisplayName(),
                 user.getBiography() == null ? "" : user.getBiography(),
                 user.getProfilePicture() == null ? "placeholder" : user.getProfilePicture().getUrl(),
                 user.getRecipes() == null ? new ArrayList<>() : user.getRecipes().stream().map(Recipe::getId).toList(),
@@ -29,12 +29,12 @@ public record UserDTO(
     }
 
     @Override
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
     @Override
-    public GenericDTO<User> fromModel(User entity) {
+    public GenericDTO<User, String> fromModel(User entity) {
         return new UserDTO(entity);
     }
 

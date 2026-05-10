@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class RatingService extends GenericService<Rating, RatingDTO> {
+public class RatingService extends GenericService<Rating, RatingDTO, Integer> {
 
     @Autowired
     private RatingRepository ratingRepository;
@@ -36,7 +36,7 @@ public class RatingService extends GenericService<Rating, RatingDTO> {
     public Optional<RatingDTO> findByUser(User user){
         return ratingRepository.findByUser(user).map(this::toDTO);
     }
-    public Optional<RatingDTO> findByUserId(Integer userId){
+    public Optional<RatingDTO> findByUserId(String userId){
         return ratingRepository.findByUser_id(userId).map(this::toDTO);
     }
 

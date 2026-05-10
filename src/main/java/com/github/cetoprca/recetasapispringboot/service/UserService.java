@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserService extends GenericService<User, UserDTO> {
+public class UserService extends GenericService<User, UserDTO, String> {
 
     @Autowired
     private UserRepository userRepository;
 
-    protected UserService(JpaRepository<User, Integer> repository) {
+    protected UserService(JpaRepository<User, String> repository) {
         super(repository);
     }
 
@@ -24,12 +24,12 @@ public class UserService extends GenericService<User, UserDTO> {
         return new UserDTO(entity);
     }
 
-    public Optional<UserDTO> findByUsername(String username) {
-        return userRepository.findByUsername(username).map(this::toDTO);
+    public Optional<UserDTO> findByDisplayName(String displayName) {
+        return userRepository.findByDisplayName(displayName).map(this::toDTO);
     }
 
-    public Optional<User> findByUsernameRaw(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<User> findByDisplayNameRaw(String displayName) {
+        return userRepository.findByDisplayName(displayName);
     }
 
 

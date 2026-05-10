@@ -17,15 +17,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username)
+    public UserDetails loadUserByUsername(String handle)
             throws UsernameNotFoundException {
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findById(handle)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword()) // hash guardado en DB
+                .withUsername(user.getId())
+                .password(user.getPassword())
                 .build();
     }
 }

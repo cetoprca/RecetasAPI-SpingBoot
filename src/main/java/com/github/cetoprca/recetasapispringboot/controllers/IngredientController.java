@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/ingredient")
-public class IngredientController extends GenericController<Ingredient, IngredientDTO> {
+public class IngredientController extends GenericController<Ingredient, IngredientDTO, Integer> {
 
     private final IngredientService ingredientService;
     private final RecipeService recipeService;

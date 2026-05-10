@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/recipes/tag")
-public class TagController extends GenericController<Tag, TagDTO> {
+public class TagController extends GenericController<Tag, TagDTO, Integer> {
 
     private final TagService tagService;
     private final RecipeService recipeService;

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class StepService extends GenericService<Step, StepDTO> {
+public class StepService extends GenericService<Step, StepDTO, Integer> {
 
     @Autowired
     private StepRepository stepRepository;

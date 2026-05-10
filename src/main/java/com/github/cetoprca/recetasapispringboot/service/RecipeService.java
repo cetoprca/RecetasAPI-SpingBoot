@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RecipeService extends GenericService<Recipe, RecipeDTO> {
+public class RecipeService extends GenericService<Recipe, RecipeDTO, Integer> {
 
     @Autowired
     private RecipeRepository recipeRepository;
@@ -29,11 +29,11 @@ public class RecipeService extends GenericService<Recipe, RecipeDTO> {
         return recipeRepository.findAll(spec, pageable);
     }
 
-    public Page<Recipe> findSavedRecipesByUserId(Integer userId, Pageable pageable) {
+    public Page<Recipe> findSavedRecipesByUserId(String userId, Pageable pageable) {
         return recipeRepository.findSavedRecipesByUserId(userId, pageable);
     }
 
-    public Page<Recipe> findByAuthorId(Integer userId, Pageable pageable) {
+    public Page<Recipe> findByAuthorId(String userId, Pageable pageable) {
         return recipeRepository.findByAuthorId(userId, pageable);
     }
 }

@@ -75,7 +75,7 @@ public class StepController {
     public ResponseEntity<?> save(@PathVariable(name = "recipeID") Integer recipeID, @RequestBody StepDTO entityDTO, Principal principal){
         try {
 
-            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
             Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
 
@@ -103,7 +103,7 @@ public class StepController {
     public ResponseEntity<?> update(@PathVariable(name = "recipeID") Integer recipeID, @RequestBody StepDTO entityDTO, Principal principal){
         try {
 
-            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
             Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
 
@@ -139,7 +139,7 @@ public class StepController {
     public ResponseEntity<?> deleteById(@PathVariable(name = "recipeID") Integer recipeID, @PathVariable(name = "stepID") Integer stepID, Principal principal){
         try {
 
-            User loggedUser = userService.findByUsernameRaw(principal.getName()).orElseThrow();
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
             Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
 

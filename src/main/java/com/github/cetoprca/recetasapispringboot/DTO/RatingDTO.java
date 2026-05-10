@@ -7,16 +7,16 @@ public record RatingDTO(
         String title,
         String description,
         Integer stars,
-        Integer author,
+        String author,
         Integer recipe
-) implements GenericDTO<Rating> {
+) implements GenericDTO<Rating, Integer> {
     public RatingDTO(Rating rating){
         this(
                 rating.getId(),
                 rating.getTitle() == null ? "" : rating.getTitle(),
                 rating.getDescription() == null ? "" : rating.getDescription(),
                 rating.getStars() == null ? 0 : rating.getStars(),
-                rating.getUser() == null ? -1 : rating.getUser().getId(),
+                rating.getUser() == null ? "" : rating.getUser().getId(),
                 rating.getRecipe() == null ? -1 : rating.getRecipe().getId()
         );
     }
@@ -26,7 +26,7 @@ public record RatingDTO(
     }
 
     @Override
-    public GenericDTO<Rating> fromModel(Rating entity) {
+    public GenericDTO<Rating, Integer> fromModel(Rating entity) {
         return new RatingDTO(entity);
     }
 

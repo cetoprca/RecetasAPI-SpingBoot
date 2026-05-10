@@ -9,7 +9,7 @@ public record StepDTO(
         Integer position,
         String image,
         Integer recipe
-) implements GenericDTO<Step> {
+) implements GenericDTO<Step, Integer> {
     public StepDTO(Step step){
         this(
                 step.getId(),
@@ -27,7 +27,7 @@ public record StepDTO(
     }
 
     @Override
-    public GenericDTO<Step> fromModel(Step entity) {
+    public GenericDTO<Step, Integer> fromModel(Step entity) {
         return new StepDTO(entity);
     }
 

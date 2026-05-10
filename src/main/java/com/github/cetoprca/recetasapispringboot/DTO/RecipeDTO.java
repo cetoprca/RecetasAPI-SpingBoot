@@ -16,13 +16,13 @@ public record RecipeDTO(
         Integer totalTime,
         Boolean isPublic,
         LocalDate creationDate,
-        Integer author,
+        String author,
         Integer cuisine,
         List<Integer> ratings,
         List<Integer> steps,
         List<Integer> tags,
         List<Integer> ingredients
-        ) implements GenericDTO<Recipe> {
+        ) implements GenericDTO<Recipe, Integer> {
     public RecipeDTO(Recipe recipe){
         this(
                 recipe.getId(),
@@ -34,7 +34,7 @@ public record RecipeDTO(
                 recipe.getTotalTime() == null ? 0 : recipe.getTotalTime(),
                 recipe.getIsPublic() != null && recipe.getIsPublic(),
                 recipe.getCreationDate() == null ? LocalDate.now() : recipe.getCreationDate(),
-                recipe.getAuthor() == null ? -1 : recipe.getAuthor().getId(),
+                recipe.getAuthor() == null ? "" : recipe.getAuthor().getId(),
                 recipe.getCuisine() == null ? -1 : recipe.getCuisine().getId(),
                 recipe.getRatings() == null ? new ArrayList<>() : recipe.getRatings().stream().map(Rating::getId).toList(),
                 recipe.getSteps() == null ? new ArrayList<>() : recipe.getSteps().stream().map(Step::getId).toList(),
@@ -49,7 +49,7 @@ public record RecipeDTO(
     }
 
     @Override
-    public GenericDTO<Recipe> fromModel(Recipe entity) {
+    public GenericDTO<Recipe, Integer> fromModel(Recipe entity) {
         return new RecipeDTO(entity);
     }
 

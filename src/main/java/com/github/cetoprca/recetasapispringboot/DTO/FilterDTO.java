@@ -6,7 +6,7 @@ import java.util.List;
 public record FilterDTO(
         List<Integer> tags,
         List<Integer> ingredients,
-        Integer author,
+        String author,
         Integer cuisine,
         Integer rating,
         Boolean exactRating,
@@ -25,7 +25,7 @@ public record FilterDTO(
         public static class Builder {
                 private List<Integer> tags;
                 private List<Integer> ingredients;
-                private Integer author;
+                private String author;
                 private Integer cuisine;
                 private Integer rating;
                 private Boolean exactRating;
@@ -47,7 +47,7 @@ public record FilterDTO(
                         return this;
                 }
 
-                public Builder author(Integer author) {
+                public Builder author(String author) {
                         this.author = author;
                         return this;
                 }
