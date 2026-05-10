@@ -4,6 +4,7 @@ import com.github.cetoprca.recetasapispringboot.model.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.OptionalDouble;
 
@@ -47,7 +48,7 @@ public class RecipeCardDTO {
             cuisine = recipe.getCuisine().getName();
         }
 
-        List<TagDTO> tags = recipe.getTags().stream().map(TagDTO::new).toList();
+        List<TagDTO> tags = recipe.getTags().stream().map(TagDTO::new).sorted(Comparator.comparing(TagDTO::name)).toList();
 
         this.id = recipe.getId();
         this.tags = tags;
