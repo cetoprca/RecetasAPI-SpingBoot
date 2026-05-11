@@ -97,6 +97,33 @@ public class UserController {
         }
     }
 
+    @PostMapping("/follow/{userID}")
+    public ResponseEntity<?> followUser(@PathVariable(name = "userID") String id, Principal principal){
+        try {
+            User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
+
+            Optional<User> userOpt = userService.findByIdRaw(id);
+            if (!userOpt.isPresent()){
+                return ResponseEntity.notFound().build();
+            }
+            User userToFollow = userOpt.get();
+
+            Set<User> followedUsers = loggedUser.getFollowing();
+            if(followedUsers.contains(userToFollow)) {
+                followedUsers.remove(userToFollow);
+            }else {
+                followedUsers.add(userToFollow);
+            }
+            loggedUser.setFollowing(followedUsers);
+
+            loggedUser = userService.save(loggedUser);
+
+            return ResponseEntity.ok(new UserDTO(loggedUser));
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
     @PatchMapping
     public ResponseEntity<?> update(@RequestBody UserDTO userDTO, Principal principal){
         try {
@@ -207,6 +234,7 @@ public class UserController {
         List<Recipe> recipes = new ArrayList<>();
         List<Recipe> savedRecipes = new ArrayList<>();
         List<Rating> ratings = new ArrayList<>();
+        List<User> following = new ArrayList<>();
 
         if (dto.recipes() != null){
             dto.recipes().forEach(id -> {
@@ -226,6 +254,12 @@ public class UserController {
             });
         }
 
+        if (dto.following() != null){
+            dto.following().forEach(id -> {
+                userService.findByIdRaw(id).ifPresent(following::add);
+            });
+        }
+
         if (dto.profilePicturePath() != null){
             imageService.findByIdRaw(dto.profilePicturePath()).ifPresent(entity::setProfilePicture);
         }
@@ -233,6 +267,7 @@ public class UserController {
         entity.setRecipes(new HashSet<>(recipes));
         entity.setSavedRecipes(new HashSet<>(savedRecipes));
         entity.setRatings(new HashSet<>(ratings));
+        entity.setFollowing(new HashSet<>(following));
 
         return entity;
     }
