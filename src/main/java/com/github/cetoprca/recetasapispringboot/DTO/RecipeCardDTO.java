@@ -3,7 +3,6 @@ package com.github.cetoprca.recetasapispringboot.DTO;
 import com.github.cetoprca.recetasapispringboot.model.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.OptionalDouble;
@@ -15,12 +14,12 @@ import java.util.OptionalDouble;
 @Setter
 public class RecipeCardDTO {
     Integer id;
-    List<TagDTO> tags;
+    List<BasicTagDTO> tags;
     String imageURL;
     String title;
     String description;
     String cuisine;
-    UserDTO author;
+    BasicUserDTO author;
     Integer stars;
     Integer prepTime;
     Integer cookTime;
@@ -33,9 +32,9 @@ public class RecipeCardDTO {
             stars = Math.toIntExact(Math.round(starsDouble.getAsDouble()));
         }
 
-        UserDTO userDTO = null;
+        BasicUserDTO userDTO = null;
         if (recipe.getAuthor() != null){
-            userDTO = new UserDTO(recipe.getAuthor());
+            userDTO = new BasicUserDTO(recipe.getAuthor());
         }
 
         String imageUrl = "";
@@ -48,7 +47,7 @@ public class RecipeCardDTO {
             cuisine = recipe.getCuisine().getName();
         }
 
-        List<TagDTO> tags = recipe.getTags().stream().map(TagDTO::new).sorted(Comparator.comparing(TagDTO::name)).toList();
+        List<BasicTagDTO> tags = recipe.getTags().stream().map(BasicTagDTO::new).sorted(Comparator.comparing(BasicTagDTO::name)).toList();
 
         this.id = recipe.getId();
         this.tags = tags;

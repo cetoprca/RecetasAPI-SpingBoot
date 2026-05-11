@@ -14,7 +14,8 @@ public record UserDTO(
         String profilePicturePath,
         List<Integer> recipes,
         List<Integer> savedRecipes,
-        List<Integer> ratings
+        List<Integer> ratings,
+        List<String> following
 ) implements GenericDTO<User, String> {
     public UserDTO(User user){
         this(
@@ -24,8 +25,9 @@ public record UserDTO(
                 user.getProfilePicture() == null ? "placeholder" : user.getProfilePicture().getUrl(),
                 user.getRecipes() == null ? new ArrayList<>() : user.getRecipes().stream().map(Recipe::getId).toList(),
                 user.getSavedRecipes() == null ? new ArrayList<>() : user.getSavedRecipes().stream().map(Recipe::getId).toList(),
-                user.getRatings() == null ? new ArrayList<>() : user.getRatings().stream().map(Rating::getId).toList()
-        );
+                user.getRatings() == null ? new ArrayList<>() : user.getRatings().stream().map(Rating::getId).toList(),
+                user.getFollowing() == null ? new ArrayList<>() : user.getFollowing().stream().map(User::getId).toList()
+                );
     }
 
     @Override

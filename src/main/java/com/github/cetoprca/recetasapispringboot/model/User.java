@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -42,6 +43,14 @@ public class User implements BaseModel<User, UserDTO> {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Rating> ratings = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "following",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_user_id")
+    )
+    private Set<User> following = new HashSet<>();
+
     public User(UserDTO userDTO) {
         this.id = userDTO.id();
         this.displayName = userDTO.displayName();
@@ -76,6 +85,15 @@ public class User implements BaseModel<User, UserDTO> {
                     this.ratings.remove(rating);
                 }else{
                     this.ratings.add(rating);
+                }
+            }
+        }
+        if (baseModel.getFollowing() != null){
+            for (User followedUser : baseModel.getFollowing()){
+                if (this.following.contains(followedUser)){
+                    this.following.remove(followedUser);
+                }else{
+                    this.following.add(followedUser);
                 }
             }
         }
