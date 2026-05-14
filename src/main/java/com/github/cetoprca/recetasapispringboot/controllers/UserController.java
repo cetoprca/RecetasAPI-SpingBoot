@@ -102,6 +102,10 @@ public class UserController {
         try {
             User loggedUser = userService.findByIdRaw(principal.getName()).orElseThrow();
 
+            if (loggedUser.getId().equals(id)){
+                return ResponseEntity.badRequest().body("You can't follow yourself");
+            }
+
             Optional<User> userOpt = userService.findByIdRaw(id);
             if (!userOpt.isPresent()){
                 return ResponseEntity.notFound().build();
