@@ -51,6 +51,9 @@ public class User implements BaseModel<User, UserDTO> {
     )
     private Set<User> following = new HashSet<>();
 
+    @ManyToMany(mappedBy = "following")
+    private Set<User> followers = new HashSet<>();
+
     public User(UserDTO userDTO) {
         this.id = userDTO.id();
         this.displayName = userDTO.displayName();

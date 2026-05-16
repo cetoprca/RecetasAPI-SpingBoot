@@ -112,6 +112,14 @@ public class UserController {
             }
             User userToFollow = userOpt.get();
 
+            System.out.println("Siguiendome: " + loggedUser.getFollowers().stream().map(User::getId).toList());
+            System.out.println("Siugiendo: " + loggedUser.getFollowing().stream().map(User::getId).toList());
+
+            System.out.println("Lo siguen: " + userToFollow.getFollowers().stream().map(User::getId).toList());
+            System.out.println("Sigue: " + userToFollow.getFollowing().stream().map(User::getId).toList());
+
+
+
             Set<User> followedUsers = loggedUser.getFollowing();
             if(followedUsers.contains(userToFollow)) {
                 followedUsers.remove(userToFollow);
