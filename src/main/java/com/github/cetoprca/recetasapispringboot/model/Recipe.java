@@ -52,6 +52,7 @@ public class Recipe implements BaseModel<Recipe, RecipeDTO> {
     private Set<Rating> ratings = new HashSet<>();
 
     @OneToMany(mappedBy = "recipe")
+    @OrderBy("position ASC")
     private Set<Step> steps = new HashSet<>();
 
     @ManyToMany
