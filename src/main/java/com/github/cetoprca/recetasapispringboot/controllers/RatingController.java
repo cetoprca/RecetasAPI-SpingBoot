@@ -1,5 +1,6 @@
 package com.github.cetoprca.recetasapispringboot.controllers;
 
+import com.github.cetoprca.recetasapispringboot.DTO.RatingCardDTO;
 import com.github.cetoprca.recetasapispringboot.DTO.RatingDTO;
 import com.github.cetoprca.recetasapispringboot.model.Rating;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
@@ -40,6 +41,22 @@ public class RatingController{
             }
 
             return ResponseEntity.ok(recipe.getRatings().stream().map(RatingDTO::new).toList());
+
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/card")
+    public ResponseEntity<?> findAllCards(@PathVariable(name = "recipeID") Integer recipeID){
+        try {
+            Recipe recipe = recipeService.findByIdRaw(recipeID).orElse(null);
+
+            if (recipe == null){
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok(recipe.getRatings().stream().map(RatingCardDTO::new).toList());
 
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
