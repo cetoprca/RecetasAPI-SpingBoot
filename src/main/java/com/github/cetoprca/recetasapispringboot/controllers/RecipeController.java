@@ -263,7 +263,20 @@ public class RecipeController extends GenericController<Recipe, RecipeDTO, Integ
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            return super.deleteById(id);
+            Set<String> imageUrls = new HashSet<>();
+            if (recipe.getImage() != null) imageUrls.add(recipe.getImage().getUrl());
+            for (Step step : recipe.getSteps()) {
+                if (step.getImage() != null) imageUrls.add(step.getImage().getUrl());
+            }
+
+            recipeService.deleteSavedRecipeReferences(id);
+            recipeService.deleteById(id);
+
+            for (String url : imageUrls) {
+                imageService.deleteImageIfUnused(url);
+            }
+
+            return ResponseEntity.noContent().build();
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
