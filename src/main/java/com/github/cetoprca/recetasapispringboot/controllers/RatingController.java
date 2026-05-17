@@ -100,6 +100,7 @@ public class RatingController{
 
 
             Rating entity = entityDTO.toModel();
+            entity.setId(null);
             entity = setRelations(entity, entityDTO);
 
             entity.setRecipe(recipe);
