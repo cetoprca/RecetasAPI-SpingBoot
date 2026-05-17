@@ -63,6 +63,7 @@ public class User implements BaseModel<User, UserDTO> {
     @Override
     public User mergeWith(User baseModel) {
         if (baseModel.getBiography() != null) this.biography = baseModel.getBiography();
+        if (baseModel.getDisplayName() != null) this.displayName = baseModel.getDisplayName();
         if (baseModel.getProfilePicture() != null) this.profilePicture = baseModel.getProfilePicture();
         if (baseModel.getRecipes() != null){
             for (Recipe recipe : baseModel.getRecipes()){
