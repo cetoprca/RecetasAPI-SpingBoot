@@ -276,6 +276,10 @@ public class UserController {
             imageService.findByIdRaw(dto.profilePicturePath()).ifPresent(entity::setProfilePicture);
         }
 
+        if (dto.bannerPath() != null){
+            imageService.findByIdRaw(dto.bannerPath()).ifPresent(entity::setBanner);
+        }
+
         entity.setRecipes(new HashSet<>(recipes));
         entity.setSavedRecipes(new HashSet<>(savedRecipes));
         entity.setRatings(new HashSet<>(ratings));

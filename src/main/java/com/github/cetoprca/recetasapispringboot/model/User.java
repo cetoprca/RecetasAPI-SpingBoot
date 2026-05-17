@@ -30,6 +30,10 @@ public class User implements BaseModel<User, UserDTO> {
     @JoinColumn(name = "profile_image_url")
     private Image profilePicture;
 
+    @ManyToOne
+    @JoinColumn(name = "banner_image_url")
+    private Image banner;
+
     @ManyToMany
     @JoinTable(
             name = "user_saved_recipe",
@@ -63,7 +67,9 @@ public class User implements BaseModel<User, UserDTO> {
     @Override
     public User mergeWith(User baseModel) {
         if (baseModel.getBiography() != null) this.biography = baseModel.getBiography();
+        if (baseModel.getDisplayName() != null) this.displayName = baseModel.getDisplayName();
         if (baseModel.getProfilePicture() != null) this.profilePicture = baseModel.getProfilePicture();
+        if (baseModel.getBanner() != null) this.banner = baseModel.getBanner();
         if (baseModel.getRecipes() != null){
             for (Recipe recipe : baseModel.getRecipes()){
                 if (this.recipes.contains(recipe)){
