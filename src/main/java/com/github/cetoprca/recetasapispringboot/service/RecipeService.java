@@ -3,6 +3,7 @@ package com.github.cetoprca.recetasapispringboot.service;
 import com.github.cetoprca.recetasapispringboot.DTO.RecipeDTO;
 import com.github.cetoprca.recetasapispringboot.model.Recipe;
 import com.github.cetoprca.recetasapispringboot.repository.RecipeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,5 +36,10 @@ public class RecipeService extends GenericService<Recipe, RecipeDTO, Integer> {
 
     public Page<Recipe> findByAuthorId(String userId, Pageable pageable) {
         return recipeRepository.findByAuthorId(userId, pageable);
+    }
+
+    @Transactional
+    public void deleteSavedRecipeReferences(Integer recipeId) {
+        recipeRepository.deleteSavedRecipeReferences(recipeId);
     }
 }

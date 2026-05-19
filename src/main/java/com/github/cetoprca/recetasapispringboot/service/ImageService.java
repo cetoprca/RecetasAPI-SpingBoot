@@ -61,6 +61,21 @@ public class ImageService {
         return imageRepository.findById(url).map(ImageDTO::new);
     }
 
+    public void deleteImageIfUnused(String url) {
+        if (imageRepository.countStepReferences(url) > 0) return;
+        if (imageRepository.countRecipeReferences(url) > 0) return;
+        if (imageRepository.countUserReferences(url) > 0) return;
+
+        try {
+            Path ruta = Paths.get("images").resolve(url).normalize();
+            Files.deleteIfExists(ruta);
+        } catch (Exception e) {
+            throw new RuntimeException("Error borrando archivo", e);
+        }
+
+        imageRepository.deleteById(url);
+    }
+
     @Transactional
     public void deleteImage(String url) {
 
