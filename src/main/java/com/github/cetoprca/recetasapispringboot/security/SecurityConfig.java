@@ -41,6 +41,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/login",
                                 "/api/user/register",
+                                "/api/user/exists",
+                                "/api/user/exists/",
+                                "/api/user/exists/**",
                                 "/doc/swagger-ui.html",
                                 "/doc/swagger-ui/",
                                 "/doc/swagger-ui/**",

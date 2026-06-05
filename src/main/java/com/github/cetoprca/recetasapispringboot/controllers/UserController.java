@@ -61,6 +61,16 @@ public class UserController {
         }
     }
 
+    @GetMapping("/exists/{userID}")
+    public ResponseEntity<?> exists(@PathVariable(name = "userID") String id){
+        UserDTO userDTO = userService.findById(id).orElse(null);
+
+        HashMap<String, Boolean> response = new HashMap<>();
+        response.put("available", userDTO == null);
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/logged")
     public ResponseEntity<?> findLoggedUser(Principal principal){
         try {
